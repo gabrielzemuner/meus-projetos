@@ -1,6 +1,11 @@
 packages:
-  - apps/public/github-pages/estudocs
+  - apps/**
+  - cursos/**
+  - playground/**
+  - packages/**
 
 onlyBuiltDependencies:
   - esbuild
   - sharp
+  - unrs-resolver
+  - vue-demi
