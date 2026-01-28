@@ -1,0 +1,6 @@
+packages:
+  - apps/public/github-pages/estudocs
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
