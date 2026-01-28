@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- React and ReactDOM from CDN -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <!-- Babel (to use JSX in the browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      function TodoList() {
+        // 1) Estado (equivalente ao: let tasks = [])
+        const [tasks, setTasks] = React.useState([]);
+
+        // 2) Handler do form
+        function handleSubmit(event) {
+          event.preventDefault();
+
+          const formData = new FormData(event.currentTarget);
+
+          const value = formData.get("addTask").trim();
+
+          if (!value) {
+            alert("Campo vazio");
+            return;
+          }
+
+          // 3) Atualizar o Estado
+          const task = {
+            id: crypto.randomUUID(),
+            text: value,
+          };
+
+          setTasks([...tasks, task]);
+
+          // 4) Limpar o input
+          event.currentTarget.reset();
+        }
+
+        // 5) Deletar usuário
+        function handleDelete(id) {
+          const newTasks = tasks.filter((task) => task.id !== id);
+          setTasks(newTasks);
+        }
+
+        return (
+          <div className="body">
+            <h1>Lista de Compras</h1>
+
+            <div className="flex-col">
+              <form className="flex" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  id="addTask"
+                  name="addTask"
+                  placeholder="Add a new task..."
+                />
+
+                <button type="submit">Add</button>
+              </form>
+
+              <ul id="tasks" className="flex-col">
+                {tasks.map((task) => (
+                  <li key={task.id}>
+                    <span>{task.text}</span>
+                    <button onClick={() => handleDelete(task.id)}>
+                      Apagar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        return <TodoList />;
+      }
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

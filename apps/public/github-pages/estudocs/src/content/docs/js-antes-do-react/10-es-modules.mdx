@@ -1,0 +1,260 @@
+---
+title: ES Modules
+description: "Import e export (named export, default export, alias e import * as)."
+slug: js-antes-do-react/10-es-modules
+---
+
+import PlaygroundLinks from "../../../components/PlaygroundLinks";
+
+ES Modules é o sistema moderno de **import/export** do JavaScript.
+
+Você separa o código em arquivos e importa o que precisa.
+
+:::note
+Para rodar `import/export`, seu ambiente precisa suportar **modules**:
+- Browser com `<script type="module">`
+- Bundler (Vite, Astro, etc.)
+- Node com ESM (ou `"type": "module"` no package.json)
+:::
+
+---
+
+## Arquivo: `math.js` (Named Exports)
+
+```js title="math.js"
+export const PI = Math.PI;
+
+export function somar(a, b) {
+  return a + b;
+}
+
+export function subtrair(a, b) {
+  return a - b;
+}
+```
+
+**Named export** = você exporta com um nome, e importa usando aquele nome.
+
+---
+
+## Arquivo: `sum.js` (Default Export)
+
+```js title="sum.js"
+export default function sum(a, b) {
+  return a + b;
+}
+```
+
+**Default export** = normalmente 1 export “principal” do arquivo.  
+Ao importar, você pode dar **qualquer nome**.
+
+---
+
+## Arquivo: `main.js` (Imports)
+
+```js title="main.js"
+import { somar, subtrair, PI } from "./math.js";
+import sum from "./sum.js";
+
+// Named exports: precisa importar pelo nome
+console.log(somar(1, 2)); // => 3
+console.log(subtrair(2, 1)); // => 1
+console.log(PI); // => 3.1415...
+
+// Default export: você escolhe o nome no import
+import abacaxi from "./sum.js";
+console.log(abacaxi(1, 2)); // => 3
+
+// Importar tudo de um arquivo (namespace import)
+import * as math from "./math.js";
+console.log(math.somar(1, 2)); // => 3
+
+// Renomear um named export (alias)
+import { somar as somaNumeros } from "./math.js";
+console.log(somaNumeros(1, 2)); // => 3
+```
+
+:::tip
+Repare que nos imports acima eu usei `./math.js` e `./sum.js` com extensão.
+No browser (module), muitas vezes a extensão é necessária.
+:::
+
+---
+
+## Re-export (menos comum, mas existe)
+
+Você pode importar e exportar direto:
+
+```js title="index.js"
+export { somar, subtrair, PI } from "./math.js";
+```
+
+Assim você cria um “arquivo central” que re-exporta de vários lugares.
+
+---
+
+## Como testar ES Modules rápido
+
+### Opção A) No seu PC (mais garantido): Vite
+Crie uma pastinha e rode:
+
+```bash
+npm create vite@latest esmodules -- --template vanilla
+cd esmodules
+npm install
+npm run dev
+```
+
+Aí você cria `math.js`, `sum.js` e usa `main.js`.
+
+### Opção B) Playground online
+Se o editor não suportar `import/export`, use um que suporte módulos/múltiplos arquivos.
+<PlaygroundLinks />
+
+---
+
+## Resumo final
+
+- **Named export**: `export function somar...` → `import { somar } from "./math.js"`
+- **Default export**: `export default function sum...` → `import qualquerNome from "./sum.js"`
+- **Import all**: `import * as math from "./math.js"`
+- **Alias**: `import { somar as somaNumeros } from "./math.js"`
+- **Re-export**: `export { somar } from "./math.js"`
+
+---
+
+## Exercícios
+
+Tente fazer **sem olhar a resposta**.
+
+:::note
+Para estes exercícios, crie os arquivos `math.js`, `sum.js` e `main.js` (igual acima) em um ambiente que suporte modules.
+:::
+
+---
+
+### 1) Named export: criar `multiplicar`
+
+No `math.js`, crie:
+
+```js
+export function multiplicar(a, b) {
+  return a * b;
+}
+```
+
+E no `main.js`, importe e teste com `console.log(multiplicar(2, 3))`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js title="math.js"
+export const PI = Math.PI;
+
+export function somar(a, b) {
+  return a + b;
+}
+
+export function subtrair(a, b) {
+  return a - b;
+}
+
+export function multiplicar(a, b) {
+  return a * b;
+}
+```
+
+```js title="main.js"
+import { multiplicar } from "./math.js";
+
+console.log(multiplicar(2, 3)); // => 6
+```
+
+</details>
+
+---
+
+### 2) Default export: criar `divide.js`
+
+Crie um arquivo `divide.js` com `export default function divide(a, b)`.
+
+Depois, importe em `main.js` com qualquer nome e teste.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js title="divide.js"
+export default function divide(a, b) {
+  return a / b;
+}
+```
+
+```js title="main.js"
+import banana from "./divide.js";
+
+console.log(banana(10, 2)); // => 5
+```
+
+</details>
+
+---
+
+### 3) `import * as`: usar `math.PI`
+
+No `main.js`, importe tudo de `math.js` e imprima `math.PI`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js title="main.js"
+import * as math from "./math.js";
+
+console.log(math.PI);
+```
+
+</details>
+
+---
+
+### 4) Alias: renomear `subtrair` para `minus`
+
+No `main.js`, faça:
+
+```js
+import { subtrair as minus } from "./math.js";
+```
+
+e teste `minus(10, 3)`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js title="main.js"
+import { subtrair as minus } from "./math.js";
+
+console.log(minus(10, 3)); // => 7
+```
+
+</details>
+
+---
+
+### 5) Re-export: criar `index.js`
+
+Crie `index.js` que re-exporta tudo do `math.js`, e no `main.js` importe do `index.js`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js title="index.js"
+export { PI, somar, subtrair } from "./math.js";
+```
+
+```js title="main.js"
+import { somar, PI } from "./index.js";
+
+console.log(somar(1, 2)); // => 3
+console.log(PI);
+```
+
+</details>

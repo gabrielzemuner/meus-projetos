@@ -1,0 +1,196 @@
+---
+title: Template Literals
+description: Strings com interpolação usando crases (`) e ${...}.
+slug: js-antes-do-react/08-template-literals
+---
+
+import PlaygroundLinks from "../../../components/PlaygroundLinks";
+
+**Template Literals** são strings com crases (`` ` ``) que permitem:
+
+- interpolar variáveis com `${...}`
+- quebrar linha facilmente
+- combinar expressões (inclusive `??`, `||`, ternário etc.)
+
+---
+
+## Exemplo: concatenação “antiga”
+
+```js
+const name = "Diego";
+const message = "Bem-vindo, " + name;
+
+console.log(message); // => "Bem-vindo, Diego"
+```
+
+---
+
+## Exemplo: Template Literal (moderno)
+
+```js
+const name = "Diego";
+const message = `Bem-vindo, ${name}`;
+
+console.log(message); // => "Bem-vindo, Diego"
+```
+
+:::tip
+Dentro do `${...}` você pode colocar **qualquer expressão** (não só variável).
+:::
+
+---
+
+## Exemplo: usando `??` dentro do template
+
+Aqui juntamos com Nullish Coalescing: se `name` for `null/undefined`, usa `"visitante"`.
+
+```js
+const name = null;
+const message = `Bem-vindo, ${name ?? "visitante"}`;
+
+console.log(message); // => "Bem-vindo, visitante"
+```
+
+---
+
+## Resumo final
+
+- `"texto " + var` → concatenação antiga
+- `` `texto ${var}` `` → template literal
+- `${...}` aceita expressão (ex.: `${name ?? "visitante"}`)
+
+---
+
+## Exercícios
+
+Tente fazer **sem olhar a resposta**. Depois confira e compare com o seu.
+
+<PlaygroundLinks className="bg-blue-500/10 border-blue-500/30"  />
+
+---
+
+### 1) Converter concatenação para Template Literal
+
+Dado:
+
+```js
+const name = "Ana";
+const msg = "Bem-vindo, " + name + "!";
+```
+
+Reescreva usando template literal.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const name = "Ana";
+const msg = `Bem-vindo, ${name}!`;
+
+console.log(msg); // => "Bem-vindo, Ana!"
+```
+
+</details>
+
+---
+
+### 2) Usar expressão dentro do `${...}`
+
+Crie uma mensagem que mostre `2 + 2` dentro do texto.
+
+Exemplo esperado:
+`"2 + 2 = 4"`
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const msg = `2 + 2 = ${2 + 2}`;
+console.log(msg); // => "2 + 2 = 4"
+```
+
+</details>
+
+---
+
+### 3) Fallback com `??`
+
+Dado:
+
+```js
+const name = null;
+```
+
+Crie:
+
+`"Bem-vindo, visitante"`
+
+usando template literal + `??`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const name = null;
+
+const msg = `Bem-vindo, ${name ?? "visitante"}`;
+console.log(msg); // => "Bem-vindo, visitante"
+```
+
+</details>
+
+---
+
+### 4) Fallback com `??` e `.trim()`
+
+Dado:
+
+```js
+const name = "   ";
+```
+
+Crie uma mensagem que trate:
+- se `name.trim()` ficar vazio, usar `"visitante"`
+- senão, usar o nome
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const name = "   ";
+
+const safeName = name.trim() ? name.trim() : null;
+const msg = `Bem-vindo, ${safeName ?? "visitante"}`;
+
+console.log(msg); // => "Bem-vindo, visitante"
+```
+
+</details>
+
+---
+
+### 5) Quebra de linha com Template Literal
+
+Crie uma string com 3 linhas:
+
+Linha 1: `Olá`  
+Linha 2: `Tudo bem?`  
+Linha 3: `Tchau`
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const msg = `Olá
+Tudo bem?
+Tchau`;
+
+console.log(msg);
+/*
+Olá
+Tudo bem?
+Tchau
+*/
+```
+
+</details>

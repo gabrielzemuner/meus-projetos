@@ -1,0 +1,20 @@
+---
+const { href, title, badge, description } = Astro.props;
+const base = import.meta.env.BASE_URL; // ex.: "/estudocs/"
+const finalHref = href.startsWith("http")
+  ? href
+  : `${base}${href.replace(/^\//, "")}`;
+---
+
+<a class="cardLink" href={finalHref} target="" rel="noopener noreferrer">
+  <div class="card">
+    <div class="cardTitle">
+      <span>{title}</span>
+      {badge ? <span class="badge">{badge}</span> : null}
+    </div>
+
+    <p class="cardDesc">{description}</p>
+
+    <span class="cardCta">Abrir em nova aba →</span>
+  </div>
+</a>

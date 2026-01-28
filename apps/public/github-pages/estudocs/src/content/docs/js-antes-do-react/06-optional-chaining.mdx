@@ -1,0 +1,173 @@
+---
+title: Optional Chaining
+description: Como evitar erros ao acessar propriedades/funções que podem não existir.
+slug: js-antes-do-react/06-optional-chaining
+---
+
+Quando você acessa **propriedades aninhadas** (ex.: `user.address.zip.code`) e alguma parte do caminho não existe, o JavaScript quebra com um erro como:
+
+> `Cannot read properties of undefined`
+
+Neste tema você vai aprender:
+
+- `?.` para proteger acessos aninhados
+- `?.()` para proteger chamadas de função
+- `??` para usar um fallback **somente** quando o valor é `null`/`undefined`
+
+:::note
+Esses erros aparecem principalmente quando você tenta acessar **algo aninhado** em um objeto que pode não existir.
+:::
+
+---
+
+## Acessar aninhado sem validar (gera erro)
+
+**Cenário:** `user` não possui `address`.
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  // address: { ... } // propositalmente não existe
+};
+
+// ❌ ERRO (se descomentar): Cannot read properties of undefined (reading 'street')
+// console.log(user.address.street);
+```
+
+### Solução “antiga” (validação manual)
+
+```js
+const exibirCep = user.address
+  ? user.address.zip
+    ? user.address.zip.code
+    : "Não informado"
+  : "Não informado";
+
+console.log("CEP (manual):", exibirCep); // => "Não informado"
+```
+
+### Solução moderna (Optional Chaining + Nullish)
+
+```js
+const exibirCep = user.address?.zip?.code ?? "Não informado";
+
+console.log("CEP (?. ??):", exibirCep); // => "Não informado"
+```
+
+:::tip
+Use `??` (e não `||`) quando você quer fallback só para `null/undefined` — sem confundir com `0`, `""` ou `false`.
+:::
+
+---
+
+## Quando `address` existe e a função existe
+
+Aqui `address` existe e `showFullAddress()` existe.
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: {
+    street: "Rua teste",
+    number: 176,
+    zip: { code: "89160000", city: "Rio do Sul" },
+    showFullAddress() {
+      return "ok";
+    },
+  },
+};
+
+console.log(user.address.showFullAddress()); // => "ok"
+```
+
+---
+
+## Quando `address` NÃO existe e chamamos a função
+
+**Cenário:** `address` não existe, então chamar função direto quebra.
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+};
+
+// ❌ ERRO (se descomentar): Cannot read properties of undefined (reading 'showFullAddress')
+// console.log(user.address.showFullAddress());
+
+// ✅ SOLUÇÃO:
+console.log(user.address?.showFullAddress?.() ?? "Não informado"); // => "Não informado"
+```
+
+---
+
+## `address` existe, mas a função NÃO existe
+
+**Cenário:** `address` existe, mas `showFullAddress` não.
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: {
+    street: "Rua teste",
+    number: 176,
+    zip: { code: "89160000", city: "Rio do Sul" },
+    // showFullAddress não existe aqui
+  },
+};
+
+// ❌ ERRO (se descomentar): user.address.showFullAddress is not a function
+// console.log(user.address.showFullAddress());
+
+// ✅ SOLUÇÃO:
+console.log(user.address?.showFullAddress?.() ?? "Não informado"); // => "Não informado"
+```
+
+---
+
+## Chave dinâmica (não aninhado não dá erro)
+
+Quando você acessa uma chave que não existe num objeto “plano”, o resultado é só `undefined`.
+
+```js
+const user = {
+  // name: "Diego", // propositalmente não existe
+  age: 27,
+};
+
+const key = "name";
+console.log(user[key]); // => undefined (NÃO dá erro, porque não é aninhado)
+```
+
+---
+
+## Chave dinâmica em objeto aninhado (pode quebrar)
+
+Aqui é o caso perigoso: `address` pode não existir.
+
+```js
+const user = {
+  // address não existe
+  age: 27,
+};
+
+const key = "state";
+
+// ❌ ERRO (se descomentar): Cannot read properties of undefined (reading 'state')
+// console.log(user.address[key]);
+
+// ✅ SOLUÇÃO: optional chaining com bracket notation
+console.log(user.address?.[key] ?? "Não informado"); // => "Não informado"
+```
+
+---
+
+## Resumo final
+
+- `obj?.a?.b?.c` → acesso aninhado seguro
+- `obj?.fn?.()` → chamada de função segura
+- `obj?.[key]` → chave dinâmica segura
+- `valor ?? fallback` → fallback só para `null/undefined`

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* Aplica estilo em todos os <li> dentro de <ul>, podendo ter outros elementos no meio */
+      ul li {
+        font-style: italic;
+      }
+
+      /* Aplica estilo em todos <li> que possuem a classe destaque */
+      li.destaque {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Aplica estilo em todos os <li> que estão diretamente dentro de <ul> */
+      ul > li {
+        font-size: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li>Item 1</li>
+      <li>Item 2</li>
+      <li class="destaque">Item 3</li>
+    </ul>
+
+    <div class="caixa">
+      Texto da caixa
+    </div>
+  </body>
+</html>

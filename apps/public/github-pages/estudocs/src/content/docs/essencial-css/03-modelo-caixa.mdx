@@ -1,0 +1,372 @@
+---
+title: Modelo de Caixa
+description: Content, padding, border e margin. Box-sizing e margin collapsing.
+slug: essencial-css/03-modelo-caixa
+---
+
+No CSS, **todo elemento é uma caixa**.
+
+A “caixa” tem camadas (de dentro pra fora):
+
+1) **content** (conteúdo)
+2) **padding** (espaço interno)
+3) **border** (borda)
+4) **margin** (espaço externo)
+
+---
+
+## Visão rápida (mental)
+
+- **padding**: empurra o **conteúdo pra dentro** (respiro interno)
+- **margin**: empurra o **elemento pra longe** dos outros (respiro externo)
+
+---
+
+## Exemplo base (pra visualizar)
+
+### HTML
+
+```html
+<div class="caixa">
+  Texto da caixa
+</div>
+```
+
+### CSS
+
+```css
+.caixa {
+  width: 240px;
+
+  padding: 16px;
+  border: 4px solid black;
+  margin: 20px;
+
+  background: #eee;
+}
+```
+
+---
+
+## Width/height e o “tamanho real” do elemento
+
+Essa parte confunde muito no começo:
+
+- `width` e `height` normalmente definem o **tamanho do conteúdo**
+- quando você soma `padding` e `border`, o elemento pode ficar **maior** do que você imaginou
+
+---
+
+## `box-sizing`: o que muda?
+
+### Padrão: `content-box` (default do navegador)
+
+Com `content-box`, `width` = **só o conteúdo**.
+
+```css
+.caixa {
+  box-sizing: content-box; /* padrão */
+  width: 300px;
+  padding: 20px;
+  border: 10px solid;
+}
+```
+
+Tamanho final real (largura):
+
+- conteúdo: 300
+- padding: 20 * 2 = 40
+- border: 10 * 2 = 20
+
+**total = 300 + 40 + 20 = 360px**
+
+---
+
+### Recomendado: `border-box`
+
+Com `border-box`, `width` = **conteúdo + padding + border**.
+
+```css
+.caixa {
+  box-sizing: border-box;
+  width: 300px;
+  padding: 20px;
+  border: 10px solid;
+}
+```
+
+Agora o total final é **300px**, e o conteúdo “se ajusta” por dentro.
+
+:::tip
+No início de projetos, é bem comum colocar:
+
+```css
+* {
+  box-sizing: border-box;
+}
+```
+
+Isso evita muita dor de cabeça.
+:::
+
+---
+
+## Margin: espaçamento externo
+
+Margin é o espaço **fora** da borda.
+
+```css
+.caixa {
+  margin: 24px;
+}
+```
+
+Você também pode controlar por lado:
+
+```css
+.caixa {
+  margin-top: 20px;
+  margin-right: 10px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+}
+```
+
+Atalho:
+
+```css
+/* topo/baixo  |  esquerda/direita */
+.caixa {
+  margin: 20px 10px;
+}
+```
+
+```css
+/* topo | direita | baixo | esquerda */
+.caixa {
+  margin: 10px 20px 30px 40px;
+}
+```
+
+---
+
+## Padding: espaçamento interno
+
+Padding é o espaço **entre o conteúdo e a borda**.
+
+```css
+.caixa {
+  padding: 16px;
+}
+```
+
+Também aceita os mesmos atalhos do margin:
+
+```css
+.caixa {
+  padding: 10px 20px; /* topo/baixo e esquerda/direita */
+}
+```
+
+---
+
+## Border: a borda do elemento
+
+Border “fica entre” padding e margin.
+
+```css
+.caixa {
+  border: 2px solid black;
+}
+```
+
+Também dá pra separar:
+
+```css
+.caixa {
+  border-width: 4px;
+  border-style: dashed;
+  border-color: red;
+}
+```
+
+---
+
+## Margin collapsing (colapso de margens)
+
+Isso acontece principalmente com **margens verticais** (`margin-top` e `margin-bottom`) entre elementos block.
+
+### Exemplo clássico
+
+```css
+h1 {
+  margin-bottom: 40px;
+}
+
+p {
+  margin-top: 30px;
+}
+```
+
+Muita gente espera 70px, mas na prática geralmente fica **40px** (a maior margem “vence”).
+
+### Por que isso acontece?
+
+Quando dois elementos block estão “encostados” verticalmente (sem nada separando), as margens podem **colapsar**.
+
+### Como “quebrar” o colapso (jeitos comuns)
+
+1) Colocar `padding` no elemento pai  
+2) Colocar `border` no elemento pai  
+3) Em alguns casos: `overflow: auto;` no pai
+
+Exemplo:
+
+```css
+.pai {
+  padding-top: 1px; /* já impede colapso */
+}
+```
+
+ou
+
+```css
+.pai {
+  border-top: 1px solid transparent;
+}
+```
+
+---
+
+## Mini-lab (pra praticar de verdade)
+
+### HTML
+
+```html
+<div class="pai">
+  <h1>Título</h1>
+  <p>Parágrafo</p>
+</div>
+```
+
+### CSS (teste passo a passo)
+
+```css
+.pai {
+  background: #f5f5f5;
+}
+
+h1 {
+  margin-bottom: 40px;
+  background: #ddd;
+}
+
+p {
+  margin-top: 30px;
+  background: #ccc;
+}
+```
+
+Agora teste:
+
+1) coloque `padding-top: 1px;` em `.pai` e veja a diferença  
+2) remova e teste `border-top: 1px solid transparent;`  
+
+---
+
+## Exercícios
+
+### 1) Calcule o tamanho final (content-box)
+
+Dado:
+
+```css
+.caixa {
+  box-sizing: content-box;
+  width: 200px;
+  padding: 10px;
+  border: 5px solid;
+}
+```
+
+Qual a largura final real?
+
+<details>
+  <summary><strong>Ver resposta</strong></summary>
+
+Total = 200 + (10*2) + (5*2) = **230px**
+</details>
+
+---
+
+### 2) Faça o total ser 200px
+
+Sem mudar `padding` e `border`, faça o elemento ter 200px de largura total.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.caixa {
+  box-sizing: border-box;
+}
+```
+
+</details>
+
+---
+
+### 3) Ajuste uma caixa “certinha”
+
+Crie uma caixa com:
+
+- largura total 320px
+- padding 16px
+- border 2px
+- margin 24px
+- sem “aumentar” o total além de 320px
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+* {
+  box-sizing: border-box;
+}
+
+.caixa {
+  width: 320px;
+  padding: 16px;
+  border: 2px solid black;
+  margin: 24px;
+}
+```
+
+</details>
+
+---
+
+### 4) Faça um teste de colapso de margens
+
+Crie um `h1` e um `p` com `margin-bottom` e `margin-top`.
+
+Depois, evite o colapso usando `padding` no pai.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.pai {
+  padding-top: 1px;
+}
+
+h1 {
+  margin-bottom: 40px;
+}
+
+p {
+  margin-top: 30px;
+}
+```
+
+</details>

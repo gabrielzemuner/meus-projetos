@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100vw;
+  margin-top: 20px;
+}
+
+p {
+  text-align: left;
+}
+
+input,
+button {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #eee;
+}
+
+button {
+  border: none;
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#tasks li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#tasks button {
+  background: crimson;
+}

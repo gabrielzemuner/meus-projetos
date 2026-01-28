@@ -1,0 +1,44 @@
+name: Sync estudocs repo from monorepo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/public/github-pages/estudocs/**"
+      - ".github/workflows/sync-estudocs.yml"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Checkout target repo (estudocs)
+        uses: actions/checkout@v4
+        with:
+          repository: gabrielzemuner/estudocs
+          token: ${{ secrets.SYNC_TOKEN }}
+          path: target
+
+      - name: Sync files (keep target .github)
+        run: |
+          rsync -a --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            "apps/public/github-pages/estudocs/" "target/"
+
+      - name: Commit & push if changed
+        run: |
+          cd target
+          git config user.name "monorepo-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "sync: update from meus-estudos ($GITHUB_SHA)"
+            git push origin main
+          else
+            echo "No changes to sync."
+          fi

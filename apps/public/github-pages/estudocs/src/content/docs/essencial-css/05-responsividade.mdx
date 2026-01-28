@@ -1,0 +1,327 @@
+---
+title: Responsividade
+description: Media queries, min-width vs max-width e padrões (mobile-first).
+slug: essencial-css/05-responsividade
+---
+
+Responsividade é adaptar o layout para diferentes tamanhos de tela.
+
+A principal ferramenta pra isso é **media query**:
+
+```css
+@media (condição) {
+  /* regras que só valem quando a condição for verdadeira */
+}
+```
+
+---
+
+## 1) `min-width` vs `max-width`
+
+### `min-width` (padrão mobile-first)
+
+Significa: **a partir de X px**, aplique as regras.
+
+```css
+.card {
+  padding: 12px;
+}
+
+@media (min-width: 600px) {
+  .card {
+    padding: 24px;
+  }
+}
+```
+
+Ou seja:
+
+- até 599px → padding 12px
+- 600px ou mais → padding 24px
+
+---
+
+### `max-width`
+
+Significa: **até X px**, aplique as regras.
+
+```css
+.menu {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 500px) {
+  .menu {
+    display: none;
+  }
+}
+```
+
+Ou seja:
+
+- até 500px → menu some
+- acima de 500px → menu aparece
+
+---
+
+## 2) Por que o `@media` “ganha”?
+
+Normalmente, regras dentro de media query parecem ter “preferência” porque:
+
+- geralmente estão escritas **depois** no arquivo (ordem do CSS)
+- entram em ação só quando a condição é verdadeira
+
+:::note
+Se duas regras têm mesma especificidade, a que vem por último no CSS vence.
+:::
+
+---
+
+## 3) Padrão recomendado: mobile-first
+
+Fluxo simples e eficiente:
+
+1) escreva o CSS pra telas pequenas (mobile)
+2) use `@media (min-width: ...)` pra ir melhorando no tablet/desktop
+
+Exemplo:
+
+```css
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+```
+
+---
+
+## 4) Imagens responsivas (clássico)
+
+Pra evitar imagens “estourando” o container:
+
+```css
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+```
+
+---
+
+## 5) Unidades úteis pra responsividade
+
+- `px` → fixo
+- `%` → relativo ao elemento pai
+- `vw` / `vh` → relativo à tela
+- `rem` → relativo ao tamanho da fonte do `html`
+
+Exemplo:
+
+```css
+html {
+  font-size: 16px;
+}
+
+h1 {
+  font-size: 2rem; /* 32px */
+}
+```
+
+---
+
+## Mini-lab 1 (cor muda por largura)
+
+### CSS
+
+```css
+.box {
+  width: 180px;
+  height: 180px;
+  border: 2px solid;
+  background: gray;
+}
+
+/* até 400px aplique isso */
+@media (max-width: 400px) {
+  .box {
+    background: blue;
+  }
+}
+
+/* a partir de 600px aplique isso */
+@media (min-width: 600px) {
+  .box {
+    background: red;
+  }
+}
+```
+
+Teste redimensionando a janela e veja a cor mudar.
+
+---
+
+## Mini-lab 2 (1 coluna no mobile, 2 no tablet, 4 no desktop)
+
+```css
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+```
+
+---
+
+## Breakpoints comuns (referência prática)
+
+Não existe regra fixa, mas alguns valores comuns:
+
+- 480px (celulares maiores)
+- 600px (tablet pequeno)
+- 768px (tablet)
+- 1024px (desktop)
+- 1200px+ (desktop grande)
+
+:::tip
+O melhor breakpoint é o que faz sentido pro seu layout “quebrar”.
+Não é sobre o aparelho, é sobre o design.
+:::
+
+---
+
+## Exercícios
+
+### 1) Trocar cor por breakpoint
+
+Objetivo:
+
+- até 400px: azul
+- a partir de 600px: vermelho
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.box {
+  background: gray;
+}
+
+@media (max-width: 400px) {
+  .box {
+    background: blue;
+  }
+}
+
+@media (min-width: 600px) {
+  .box {
+    background: red;
+  }
+}
+```
+
+</details>
+
+---
+
+### 2) Esconder sidebar no mobile
+
+No mobile (até 700px), esconda `.sidebar`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+@media (max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+}
+```
+
+</details>
+
+---
+
+### 3) Mudar layout de menu
+
+Crie um menu que:
+
+- no mobile: fique em **coluna**
+- no desktop (a partir de 800px): fique em **linha**
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 800px) {
+  .menu {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+```
+
+</details>
+
+---
+
+### 4) Grid responsivo
+
+Crie um grid que:
+
+- até 599px: 1 coluna
+- 600px+: 2 colunas
+- 1000px+: 3 colunas
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+```
+
+</details>

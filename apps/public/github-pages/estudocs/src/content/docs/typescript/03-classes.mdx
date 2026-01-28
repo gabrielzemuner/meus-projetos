@@ -1,0 +1,148 @@
+---
+title: 03 — Classes
+description: Classes, constructor params, readonly, getters e composição via props.
+slug: typescript/03-classes
+---
+
+Em React moderno você usa mais funções do que classes, mas classes ainda são úteis para:
+
+- entender encapsulamento (`private`, `protected`)
+- ler bibliotecas que expõem classes
+- modelar regras de domínio (às vezes)
+
+---
+
+## 01-usuario.ts
+
+### Forma “tradicional”
+
+```ts
+class Usuario {
+  id: number;
+  nome: string;
+  email: string;
+  senha?: string | null;
+  ativo: boolean;
+
+  constructor(id: number, nome: string, email: string, ativo: boolean, senha: string | null = null) {
+    this.id = id;
+    this.nome = nome;
+    this.email = email;
+    this.ativo = ativo;
+    this.senha = senha;
+  }
+}
+
+const usuario: Usuario = new Usuario(1, 'João', 'joao@empresa.com', true);
+console.log(usuario);
+```
+
+### Forma “compacta” (constructor params)
+
+```ts
+class Usuario2 {
+  constructor(
+    public readonly id: number,
+    public readonly nome: string,
+    public readonly email: string,
+    public readonly ativo: boolean,
+    public readonly senha: string | null = null,
+  ) {}
+}
+
+const usuario2: Usuario2 = new Usuario2(1, 'João2', 'joao@empresa.com', false);
+console.log(usuario2);
+```
+
+---
+
+## 02-curso.ts
+
+```ts
+class Curso {
+  constructor(readonly id: number, public nome: string, public duracaoEmSegundos: number) {}
+
+  duracaoEmHM(): string {
+    const horas = Math.floor(this.duracaoEmSegundos / 3600);
+    const minutos = Math.floor((this.duracaoEmSegundos % 3600) / 60);
+    return `${horas}h ${minutos}m`;
+  }
+}
+
+const curso = new Curso(1, 'TypeScript', 78467);
+console.log(curso);
+console.log(curso.nome);
+console.log(curso.duracaoEmHM());
+```
+
+---
+
+## 03-aula.ts (composição via props)
+
+```ts
+interface AulaProps {
+  id: number;
+  nome: string;
+  duracaoEmSegundos: number;
+}
+
+class Aula {
+  constructor(readonly props: AulaProps) {}
+
+  get id(): number {
+    return this.props.id;
+  }
+
+  get nome(): string {
+    return this.props.nome;
+  }
+
+  get duracaoEmSegundos(): number {
+    return this.props.duracaoEmSegundos;
+  }
+
+  duracaoEmHM(): string {
+    const horas = Math.floor(this.duracaoEmSegundos / 3600);
+    const minutos = Math.floor((this.duracaoEmSegundos % 3600) / 60);
+    return `${horas}h ${minutos}m`;
+  }
+}
+
+const aula = new Aula({
+  id: 1,
+  nome: 'Introdução ao TypeScript',
+  duracaoEmSegundos: 6000,
+});
+
+console.log(aula.nome);
+console.log(aula.duracaoEmHM());
+console.log(aula);
+console.log(aula.props);
+```
+
+---
+
+## Como isso aparece em React
+
+1. Você raramente cria classes pra componentes (hooks dominaram).
+2. Pode usar classes para “serviços”/helpers, mas muitas vezes funções puras + types são melhores.
+3. `readonly` é útil pra garantir imutabilidade de dados.
+
+---
+
+## Exercícios
+
+### 1) readonly
+
+Crie uma classe `Produto` com `id readonly` e `nome` mutável.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+class Produto {
+  constructor(public readonly id: number, public nome: string) {}
+}
+```
+
+</details>

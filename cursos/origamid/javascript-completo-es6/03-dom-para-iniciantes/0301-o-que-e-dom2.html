@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 class="titulo-principal azul etc">Esse é o título padrão</h1>
+    <script>
+      const titulo = document.querySelector("h1");
+
+      console.log(titulo.innerText); // retorna o texto;
+      console.log(titulo.classList); // retorna as classes;
+      console.log(titulo.id); // retorna o id;
+      console.log(titulo.offsetHeight); // retorna a altura do elemento;
+
+      function callback() {
+        console.log("Clicou em", titulo.innerText);
+      }
+
+      titulo.addEventListener("click", callback);
+      // ativa a função callback ao click no titulo
+
+      // Exercícios
+      // Retorne o url da página atual utilizando o objeto window
+      const urlPaginaAtual = window.location.href
+
+      // Seleciona o primeiro elemento da página que possua a classe ativo
+      const elementoAtivo = document.querySelector('.ativo')
+
+      // Retorne a linguagem do navegador
+      const linguagem = window.navigator.language
+      console.log(linguagem)
+
+      // Retorne a largura da janela
+      const larguraJanela = window.innerWidth
+      console.log(larguraJanela)
+    </script>
+  </body>
+</html>

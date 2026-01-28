@@ -1,0 +1,6 @@
+{
+    "code-runner.executorMap": {
+        "typescript": "npx ts-node",
+    },
+    "livePreview.defaultPreviewPath": "/2025-12-13-testes-diversos/typescript/claude-tasks/index.html"
+}

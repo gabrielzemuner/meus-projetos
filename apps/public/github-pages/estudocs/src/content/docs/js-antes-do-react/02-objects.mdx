@@ -1,0 +1,75 @@
+---
+title: Objects
+description: Estrutura chave/valor e formas de inspecionar chaves e valores.
+slug: js-antes-do-react/02-objects
+---
+
+Objetos em JavaScript são uma estrutura de dados que armazena conjunto de **chaves e valores**.
+
+---
+
+## Criando um objeto
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: {
+    street: "Rua teste",
+    number: 176,
+  },
+};
+```
+
+---
+
+## Verificando se uma chave existe (operador `in`)
+
+```js
+const user = { name: "Diego", age: 27 };
+
+console.log("name" in user); // => true
+
+console.log("nickname" in user); // => false
+```
+
+---
+
+## Pegando chaves e valores
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+console.log(Object.keys(user)); // => ["name", "age", "address"]
+
+console.log(Object.values(user)); // => ["Diego", 27, { street: "Rua teste", number: 176 }]
+```
+
+---
+
+## Object.entries (chave + valor)
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+console.log(Object.entries(user));
+/*
+[
+  ["name", "Diego"],
+  ["age", 27],
+  ["address", { street: "Rua teste", number: 176 }]
+]
+*/
+```
+
+:::tip
+`Object.entries()` é muito útil para percorrer objetos com `for...of` depois.
+:::

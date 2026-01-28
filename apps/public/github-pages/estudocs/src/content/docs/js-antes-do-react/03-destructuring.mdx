@@ -1,0 +1,134 @@
+---
+title: Destructuring
+description: Extraia valores de objetos/arrays para variáveis de forma simples.
+slug: js-antes-do-react/03-destructuring
+---
+
+**Destructuring** é a forma de “tirar” propriedades de um objeto (ou posições de um array) e jogar em variáveis.
+
+---
+
+## Exemplo base
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: {
+    street: "Rua teste",
+    number: 176,
+  },
+};
+```
+
+---
+
+## “Forma antiga”: acessar direto
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const address = user.address;
+
+console.log(address); // => { street: "Rua teste", number: 176 }
+```
+
+---
+
+## Destructuring do objeto
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const { address } = user;
+
+console.log(address); // => { street: "Rua teste", number: 176 }
+```
+
+---
+
+## Pegando mais de uma propriedade
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const { address, age } = user;
+
+console.log(address, age); // => { ... } 27
+```
+
+---
+
+## Renomeando variáveis
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const { age: teste } = user;
+
+console.log(teste); // => 27
+```
+
+---
+
+## Valor padrão (default)
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const { nickname = "Nome padrão" } = user;
+
+console.log(nickname); // => "Nome padrão"
+```
+
+---
+
+## Destructuring em parâmetros de função
+
+### Forma normal
+
+```js
+const user = { age: 27 };
+
+function mostrarIdade(user) {
+  return user.age;
+}
+
+console.log(mostrarIdade(user)); // => 27
+```
+
+### Com destructuring no parâmetro
+
+```js
+const user = { age: 27 };
+
+function mostrarIdade2({ age }) {
+  return age;
+}
+
+console.log(mostrarIdade2(user)); // => 27
+```
+
+:::tip
+Destructuring no parâmetro é ótimo quando você só precisa de 1 ou 2 campos do objeto.
+:::

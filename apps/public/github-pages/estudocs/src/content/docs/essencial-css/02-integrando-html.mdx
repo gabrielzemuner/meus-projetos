@@ -1,0 +1,293 @@
+---
+title: Integrando HTML
+description: 3 formas de aplicar CSS (style inline, tag style e arquivo externo com link).
+slug: essencial-css/02-integrando-html
+---
+
+Existem 3 formas comuns de colocar CSS no HTML:
+
+1) **Inline** (no próprio elemento)  
+2) **Tag `<style>`** (no `<head>`)  
+3) **Arquivo externo** (com `<link rel="stylesheet" ...>`)  
+
+---
+
+## 1) CSS inline (no próprio elemento)
+
+Você coloca o CSS no atributo `style=""` do elemento.
+
+### Exemplo
+
+```html
+<button style="background: black; color: white; padding: 10px 14px;">
+  Comprar
+</button>
+```
+
+### Quando usar
+
+- Testes rápidos
+- Ajustes muito pontuais (com cuidado)
+
+### Problema do inline
+
+- Dificulta manutenção (fica espalhado no HTML)
+- Ganha prioridade alta na “briga” de estilos
+
+:::note
+Se o CSS “não está pegando”, às vezes é porque existe `style=""` inline mandando mais.
+:::
+
+---
+
+## 2) CSS dentro da tag `<style>`
+
+Você coloca regras CSS dentro do `<head>`.
+
+### Exemplo
+
+```html
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSS no head</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .card {
+        border: 1px solid #ccc;
+        padding: 12px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card">Conteúdo</div>
+  </body>
+</html>
+```
+
+### Quando usar
+
+- Páginas simples / protótipos
+- Exercícios rápidos
+
+### Problema
+
+- Ainda fica “preso” no HTML
+- Reutilização entre páginas é pior
+
+---
+
+## 3) CSS externo com `<link>`
+
+Você cria um arquivo `.css` separado e importa com `<link>`.
+
+### Exemplo (HTML)
+
+```html
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSS externo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <h1 class="titulo">Olá</h1>
+    <p class="texto">Testando CSS externo</p>
+  </body>
+</html>
+```
+
+### Exemplo (styles.css)
+
+```css
+.titulo {
+  font-size: 28px;
+}
+
+.texto {
+  color: #444;
+}
+```
+
+### Quando usar (o padrão “certo”)
+
+- Quase sempre
+- Melhor organização e manutenção
+- Melhor reaproveitamento
+
+---
+
+## Quem vence quando mistura tudo?
+
+Regra prática (do que costuma “mandar mais”):
+
+1) **Inline** (`style=""`)  
+2) **Especificidade** (ex: `#id` > `.classe` > `tag`)  
+3) **Ordem no arquivo** (empate → quem vem por último ganha)
+
+---
+
+## Exemplo de “briga” de estilos (prioridade)
+
+### HTML
+
+```html
+<p id="principal" class="texto" style="color: purple;">
+  Olá, mundo!
+</p>
+```
+
+### CSS
+
+```css
+p {
+  color: red;
+}
+
+.texto {
+  color: blue;
+}
+
+#principal {
+  color: green;
+}
+```
+
+Resultado final: **roxo** (porque inline vence).
+
+---
+
+## Dica prática: evite `!important`
+
+`!important` existe, mas normalmente é sinal de que você está “brigando” com o CSS.
+
+Exemplo:
+
+```css
+.texto {
+  color: blue !important;
+}
+```
+
+Se você começar a usar muito `!important`, daqui a pouco nada faz sentido.
+
+:::tip
+Quando algo “não pega”, antes de usar `!important`, confira:
+- tem estilo inline?
+- tem um seletor mais específico ganhando?
+- a sua regra vem antes de outra regra?
+:::
+
+---
+
+## Exercícios
+
+### 1) Faça os 3 jeitos funcionarem
+
+Crie 3 elementos e estilize cada um com um método diferente:
+
+- 1 `h1` com **inline**
+- 1 `h2` com **tag `<style>`**
+- 1 `p` com **arquivo externo**
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+**index.html**
+
+```html
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exercício</title>
+
+    <style>
+      h2 {
+        color: blue;
+      }
+    </style>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <h1 style="color: red;">Inline</h1>
+    <h2>Tag style</h2>
+    <p class="externo">Arquivo externo</p>
+  </body>
+</html>
+```
+
+**styles.css**
+
+```css
+.externo {
+  color: green;
+}
+```
+
+</details>
+
+---
+
+### 2) Descubra “quem vence”
+
+Crie um `p` assim:
+
+```html
+<p id="a" class="b" style="color: purple;">Teste</p>
+```
+
+E um CSS assim:
+
+```css
+p { color: red; }
+.b { color: blue; }
+#a { color: green; }
+```
+
+Qual cor aparece?
+
+<details>
+  <summary><strong>Ver resposta</strong></summary>
+
+Roxo, porque `style=""` inline vence.
+</details>
+
+---
+
+### 3) Corrija o código (boas práticas)
+
+Você recebeu isso:
+
+```html
+<p style="color: red; font-size: 20px;">Meu texto</p>
+```
+
+Transforme em uma solução melhor (com classe no CSS).
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```html
+<p class="texto">Meu texto</p>
+```
+
+```css
+.texto {
+  color: red;
+  font-size: 20px;
+}
+```
+
+</details>

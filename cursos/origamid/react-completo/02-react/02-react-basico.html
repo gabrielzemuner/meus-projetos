@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React para Iniciantes</title>
+
+    <!-- Carrega o React, React Dom e Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Precisa indicar para o Babel que ele deve transpilar o código -->
+    <script type="text/babel">
+      const Button = () => {
+        return <button>Comprar</button>;
+      };
+
+      // Expressões Javascript {}
+      const Produtos = () => {
+        const produto1 = "Camisa";
+        const produto2 = "Bermuda";
+
+        return (
+          <div>
+            <button>
+              Comprar {produto1} - R$ {Math.random()}
+            </button>
+            <button>
+              Bermuda {produto2} - R$ {Math.random()}
+            </button>
+          </div>
+        );
+      };
+
+      // Eventos
+      const Produtos2 = () => {
+        function handleClick(event) {
+          console.log("Comprou: " + event.target.innerText);
+        }
+
+        return (
+          <div>
+            <button onClick={handleClick}>Camisa</button>
+            <button onClick={handleClick}>Bermuda</button>
+          </div>
+        );
+      };
+
+      // Hooks
+      const Compras = () => {
+        const [count, setCount] = React.useState(5);
+
+        function handleClick() {
+          setCount(count + 1);
+        }
+
+        return (
+          <div>
+            <button onClick={handleClick}>Comprar: {count}</button>
+            <p>Total: {count}</p>
+            <p>Preço: {count * 250}</p>
+          </div>
+        );
+      };
+
+      const App = () => {
+        return (
+          <div>
+            <h1>Teste</h1>
+            <Compras />
+          </div>
+        );
+      };
+
+      // Não é mais suportado
+      //   ReactDOM.render(<App />, document.getElementById("app"));
+
+      // Renderiza o componente App no elemento que tiver id = app
+      const container = document.getElementById("app");
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,502 @@
+---
+title: Métodos de Array
+description: Map, filter, every, some, find, findIndex e reduce (os mais usados no dia a dia).
+slug: js-antes-do-react/07-metodos-array
+---
+
+import ExampleModal from "../../../components/ExampleModal";
+import ArrayMethodsReactDemo from "../../../components/ArrayMethodsReactDemo";
+import PlaygroundLinks from "../../../components/PlaygroundLinks";
+
+<ExampleModal
+  client:load
+  title="Exemplo em React — map/filter/reduce"
+  buttonLabel="Ver exemplo em React (modal)"
+>
+  <ArrayMethodsReactDemo />
+</ExampleModal>
+
+Os métodos de array mais importantes no dia a dia (e que aparecem muito em React) são:
+
+- `forEach` (iterar)
+- `map` (transformar em um novo array)
+- `filter` (filtrar um novo array)
+- `every` / `some` (retornar booleano)
+- `find` / `findIndex` (encontrar um item)
+- `reduce` (reduzir para “uma coisa só” — número, objeto, etc.)
+
+:::note
+Esses métodos são muito usados por causa do conceito de **imutabilidade**: ao invés de alterar o array original, você cria um novo array/valor.
+:::
+
+---
+
+## Array base usado nos exemplos
+
+```js
+const array = [1, 2, 3, 4, 5];
+```
+
+---
+
+## Iterar: `for...of` vs `forEach`
+
+### `for...of`
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+for (const i of array) {
+  console.log(i);
+}
+// => 1 2 3 4 5
+```
+
+### `forEach`
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+array.forEach((item) => {
+  console.log(item);
+});
+// => 1 2 3 4 5
+```
+
+:::tip
+`forEach` é ótimo para “fazer algo” com cada item (logs, efeitos), mas ele **não retorna** um novo array útil.
+:::
+
+---
+
+## `map`: transformar e retornar um novo array (mesmo tamanho)
+
+A principal diferença para `forEach` é que o `map` **retorna um novo array**, sempre com o mesmo tamanho do original.
+
+### Exemplo “forEach + push” (gambiarra comum)
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const novoArray = [];
+array.forEach((item) => {
+  novoArray.push(item * 2);
+});
+
+console.log("exemplo com forEach:", novoArray);
+// => [2, 4, 6, 8, 10]
+```
+
+### Exemplo com `map` (jeito certo)
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const novoArray = array.map((item) => {
+  return item * 2;
+});
+
+console.log("exemplo com map:", novoArray);
+// => [2, 4, 6, 8, 10]
+```
+
+### Exemplo com condição dentro do `map`
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const novoArray = array.map((item) => {
+  if (item % 2 === 0) {
+    return item * 10;
+  }
+
+  return item;
+});
+
+console.log(novoArray);
+// => [1, 20, 3, 40, 5]
+```
+
+---
+
+## `filter`: filtrar itens (pode reduzir o tamanho)
+
+Diferente do `map`, o `filter` não serve para “transformar valores”, e sim para **manter ou remover** itens baseado em uma condição.
+
+### Exemplo: pegar só ímpares
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const novoArray = array.filter((item) => item % 2 !== 0);
+
+console.log(novoArray);
+// => [1, 3, 5]
+```
+
+### Combinando `filter` + `map`
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const novoArray = array
+  .filter((item) => item % 2 !== 0)
+  .map((item) => item * 10);
+
+console.log(novoArray);
+// => [10, 30, 50]
+```
+
+---
+
+## `every`: todos satisfazem a condição?
+
+Retorna `true` se **todos** os itens passarem no teste.
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const todosItensSaoNumeros = array.every((item) => typeof item === "number");
+
+console.log(todosItensSaoNumeros);
+// => true
+```
+
+---
+
+## `some`: pelo menos um satisfaz a condição?
+
+Retorna `true` se **algum** item passar no teste.
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const peloMenosUmItemEUmNumero = array.some((item) => {
+  return typeof item === "number";
+});
+
+console.log(peloMenosUmItemEUmNumero);
+// => true
+```
+
+---
+
+## `find`: encontrar o primeiro item que bate com a condição
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const par = array.find((item) => item % 2 === 0);
+
+console.log(par);
+// => 2
+```
+
+:::note
+Se não encontrar nada, `find` retorna `undefined`.
+:::
+
+---
+
+## `findIndex`: encontrar o índice do primeiro item que bate com a condição
+
+É igual ao `find`, mas retorna o **índice**.
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const indicePar = array.findIndex((item) => item % 2 === 0);
+
+console.log(indicePar);
+// => 1
+```
+
+:::note
+Se não encontrar nada, `findIndex` retorna `-1`.
+:::
+
+---
+
+## `reduce`: reduzir o array para um único valor
+
+O `reduce` percorre o array e acumula um resultado (número, objeto, etc).
+
+### Exemplo: soma
+
+```js
+const array = [1, 2, 3, 4, 5];
+
+const soma = array.reduce((acc, item) => {
+  return acc + item;
+}, 0);
+
+console.log(soma);
+// => 15
+```
+
+:::tip
+O segundo parâmetro do `reduce` (`0`) é o **valor inicial** do acumulador (`acc`).
+:::
+
+---
+
+## Resumo final
+
+- `forEach` → iterar (efeitos), não é pra transformar
+- `map` → transforma e retorna novo array (mesmo tamanho)
+- `filter` → filtra e retorna novo array (tamanho pode mudar)
+- `every` / `some` → booleanos
+- `find` / `findIndex` → encontra 1 item (ou índice)
+- `reduce` → vira “uma coisa só” (número/objeto/etc)
+
+---
+
+## Exercícios
+
+Tente fazer **sem olhar a resposta**. Depois confira e compare com o seu.
+
+<PlaygroundLinks className="bg-blue-500/10 border-blue-500/30"  />
+
+
+### 1) `map`: dobrar valores
+
+Dado:
+
+```js
+const nums = [1, 2, 3, 4, 5];
+```
+
+Crie um novo array com **todos os valores dobrados**.
+
+:::tip
+`map` sempre retorna um array do mesmo tamanho.
+:::
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 2, 3, 4, 5];
+
+const dobrados = nums.map((n) => n * 2);
+
+console.log(dobrados); // => [2, 4, 6, 8, 10]
+```
+
+</details>
+
+---
+
+### 2) `filter`: pegar só ímpares
+
+Dado:
+
+```js
+const nums = [1, 2, 3, 4, 5];
+```
+
+Crie um novo array contendo **apenas os números ímpares**.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 2, 3, 4, 5];
+
+const impares = nums.filter((n) => n % 2 !== 0);
+
+console.log(impares); // => [1, 3, 5]
+```
+
+</details>
+
+---
+
+### 3) `filter + map`: ímpares vezes 10
+
+Dado:
+
+```js
+const nums = [1, 2, 3, 4, 5];
+```
+
+Crie um array com **somente os ímpares**, mas **multiplicados por 10**.
+
+:::tip
+Dá pra encadear: `filter(...).map(...)`
+:::
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 2, 3, 4, 5];
+
+const resultado = nums.filter((n) => n % 2 !== 0).map((n) => n * 10);
+
+console.log(resultado); // => [10, 30, 50]
+```
+
+</details>
+
+---
+
+### 4) `every`: todos são números?
+
+Dado:
+
+```js
+const valores = [1, "2", 3];
+```
+
+Retorne `true` apenas se **todos** forem do tipo `"number"`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const valores = [1, "2", 3];
+
+const todosNumeros = valores.every((v) => typeof v === "number");
+
+console.log(todosNumeros); // => false
+```
+
+</details>
+
+---
+
+### 5) `some`: existe pelo menos um número?
+
+Dado:
+
+```js
+const valores = ["a", "b", 10];
+```
+
+Retorne `true` se existir **pelo menos um** número.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const valores = ["a", "b", 10];
+
+const temNumero = valores.some((v) => typeof v === "number");
+
+console.log(temNumero); // => true
+```
+
+</details>
+
+---
+
+### 6) `find`: encontrar o primeiro par
+
+Dado:
+
+```js
+const nums = [1, 3, 7, 8, 10];
+```
+
+Encontre o **primeiro número par**.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 3, 7, 8, 10];
+
+const primeiroPar = nums.find((n) => n % 2 === 0);
+
+console.log(primeiroPar); // => 8
+```
+
+</details>
+
+---
+
+### 7) `findIndex`: índice do primeiro par
+
+Usando o mesmo array:
+
+```js
+const nums = [1, 3, 7, 8, 10];
+```
+
+Encontre o **índice** do primeiro número par.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 3, 7, 8, 10];
+
+const idxPrimeiroPar = nums.findIndex((n) => n % 2 === 0);
+
+console.log(idxPrimeiroPar); // => 3
+```
+
+</details>
+
+---
+
+### 8) `reduce`: somar tudo
+
+Dado:
+
+```js
+const nums = [1, 2, 3, 4, 5];
+```
+
+Use `reduce` para somar todos os valores.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const nums = [1, 2, 3, 4, 5];
+
+const soma = nums.reduce((acc, n) => acc + n, 0);
+
+console.log(soma); // => 15
+```
+
+</details>
+
+---
+
+### 9) `reduce`: transformar em objeto de contagem
+
+Dado:
+
+```js
+const frutas = ["maçã", "banana", "maçã", "uva", "banana", "maçã"];
+```
+
+Crie um objeto contando quantas vezes cada fruta aparece:
+
+```js
+// esperado:
+{ "maçã": 3, "banana": 2, "uva": 1 }
+```
+
+:::tip
+Se a chave não existir ainda, comece com `0`.
+:::
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```js
+const frutas = ["maçã", "banana", "maçã", "uva", "banana", "maçã"];
+
+const contagem = frutas.reduce((acc, fruta) => {
+  acc[fruta] = (acc[fruta] ?? 0) + 1;
+  return acc;
+}, {});
+
+console.log(contagem); // => { "maçã": 3, "banana": 2, "uva": 1 }
+```
+
+</details>

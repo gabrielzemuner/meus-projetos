@@ -1,0 +1,22 @@
+---
+title: Privado
+slug: privado
+---
+
+import GuideCard from "../../../components/GuideCard.astro";
+import "../../../styles/home.css";
+import { GUIDES } from "../../../data/guides";
+
+<div class="home">
+  <h2>Guias</h2>
+  <div class="cards">
+    {GUIDES.map((g) => (
+      <GuideCard
+        href={g.startPath}
+        title={g.title}
+        badge={g.badge}
+        description={g.description}
+      />
+    ))}
+  </div>
+</div>

@@ -1,0 +1,180 @@
+---
+title: 02 — Interfaces
+description: Interfaces, propriedades opcionais, herança e index signature. Utility type Partial.
+slug: typescript/02-interfaces
+---
+
+Interfaces descrevem o “shape” de um objeto. Em React, isso aparece muito em:
+
+- props
+- modelos de dados vindos de API
+- contratos entre funções
+
+---
+
+## 01-usuario.ts
+
+```ts
+interface Usuario {
+  id: number | string;
+  nome: string;
+  email: string;
+  senha?: string;
+  ativo: boolean;
+}
+
+let usuario: Usuario = {
+  id: 1234,
+  nome: 'Fulano de Tal',
+  email: 'fulano@empresa.com.br',
+  ativo: true,
+};
+
+console.log(usuario);
+```
+
+### `senha?: string` significa `string | undefined`?
+
+Sim. `?` = “pode não existir”. Ao ler `usuario.senha`, você deve tratar como `string | undefined`.
+
+---
+
+## 02-produto.ts + Partial
+
+```ts
+interface Produto {
+  id: number;
+  nome: string;
+  descricao: string;
+  preco: number;
+  imagem: string;
+}
+
+const produto1: Produto = {
+  id: 1,
+  nome: 'Smartphone',
+  descricao: 'Um smartphone top de linha',
+  preco: 2000,
+  imagem: 'smartphone.jpg',
+};
+
+// Partial => torna todos os atributos obrigatórios em opcionais
+const produto2: Partial<Produto> = {
+  id: 2,
+  nome: 'Notebook',
+  preco: 3000,
+};
+
+console.log(produto1);
+console.log(produto2);
+```
+
+---
+
+## 03-animal.ts (herança)
+
+```ts
+interface Animal {
+  nome: string;
+  tipo: 'terrestre' | 'aquático';
+  domestico: boolean;
+}
+
+interface Pet extends Animal {
+  dono: string;
+}
+
+let cachorro: Pet = {
+  nome: 'Rex',
+  tipo: 'terrestre',
+  domestico: true,
+  dono: 'Victor',
+};
+
+console.log(cachorro);
+```
+
+---
+
+## 04-especificacao.ts (index signature)
+
+```ts
+interface Especificacoes {
+  marca: string;
+  modelo: string;
+  placadeVideo: string;
+  memoria: string;
+  processador: string;
+  armazenamento: string;
+  [extra: string]: string | number | boolean;
+}
+
+let computador: Especificacoes = {
+  marca: 'Dell',
+  modelo: 'Inspiron 15 3000',
+  placadeVideo: 'Intel UHD Graphics 620',
+  memoria: '8 GB',
+  processador: 'Intel Core i5',
+  armazenamento: '256 GB SSD',
+  bluetooth: true,
+  hdmi: true,
+};
+
+console.log(computador);
+```
+
+---
+
+## Como isso aparece em React (o que importa)
+
+1. Tipar **props** com interface/type.
+2. Tipar **dados de API** (DTOs).
+3. `Partial<T>` é comum em “editar entidade”, mas exige validação.
+
+Exemplo de props:
+
+```ts
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+```
+
+---
+
+## Exercícios
+
+### 1) Optional
+
+Crie uma interface `Login` com `email` e `senha?` e só use `toUpperCase()` se existir.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+interface Login {
+  email: string;
+  senha?: string;
+}
+
+function mostrarSenha(l: Login) {
+  if (l.senha) console.log(l.senha.toUpperCase());
+}
+```
+
+</details>
+
+### 2) Partial
+
+Crie `type ProdutoPatch = Partial<Produto>` e faça um patch que altera só `preco`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+type ProdutoPatch = Partial<Produto>;
+const patch: ProdutoPatch = { preco: 2500 };
+```
+
+</details>

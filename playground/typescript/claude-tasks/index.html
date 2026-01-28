@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+          📝 Gerenciador de Tarefas
+        </h1>
+        <p class="text-gray-600">
+          Organize suas tarefas de forma simples e eficiente
+        </p>
+      </div>
+
+      <!-- Formulário de Criar Task -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Nova Tarefa</h2>
+
+        <form id="formCriarTask" class="space-y-4">
+          <div>
+            <label
+              for="inputTitulo"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Título *
+            </label>
+            <input
+              type="text"
+              id="inputTitulo"
+              placeholder="Ex: Estudar TypeScript"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          <div>
+            <label
+              for="inputDescricao"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Descrição *
+            </label>
+            <textarea
+              id="inputDescricao"
+              rows="3"
+              placeholder="Ex: Aprender sobre classes e OOP"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+          >
+            ✅ Criar Tarefa
+          </button>
+        </form>
+      </div>
+
+      <!-- Lista de Tasks -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">Minhas Tarefas</h2>
+          <span
+            id="contadorTasks"
+            class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full"
+          >
+            0 tarefas
+          </span>
+        </div>
+
+        <!-- Aqui vão ser renderizadas as tasks -->
+        <div id="listaTasks" class="space-y-3">
+          <!-- Exemplo de como uma task vai aparecer (você vai criar dinamicamente com JS) -->
+
+          <!-- Task de exemplo (remover depois) -->
+          <div
+            class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Título da Tarefa
+                </h3>
+                <p class="text-gray-600 text-sm mt-1">
+                  Descrição da tarefa aqui...
+                </p>
+
+                <div class="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                  <span>📅 26/01/2026</span>
+                  <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded"
+                    >PENDENTE</span
+                  >
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2 ml-4">
+                <select
+                  class="text-sm border border-gray-300 rounded px-2 py-1"
+                >
+                  <option value="PENDENTE">Pendente</option>
+                  <option value="EM_PROGRESSO">Em Progresso</option>
+                  <option value="CONCLUIDA">Concluída</option>
+                </select>
+
+                <button
+                  class="text-sm bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200"
+                >
+                  ✏️ Editar
+                </button>
+
+                <button
+                  class="text-sm bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
+                >
+                  🗑️ Excluir
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Fim do exemplo -->
+        </div>
+
+        <!-- Mensagem quando não há tasks -->
+        <div id="mensagemVazia" class="text-center py-12 text-gray-400 hidden">
+          <svg
+            class="mx-auto h-12 w-12 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            ></path>
+          </svg>
+          <p class="text-lg">Nenhuma tarefa criada ainda</p>
+          <p class="text-sm mt-1">Crie sua primeira tarefa acima!</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { Task } from "./dist/Task.js";
+      import { TaskService } from "./dist/TaskService.js";
+
+      const service = new TaskService();
+      const form = document.querySelector("#formCriarTask");
+
+      let taskEditando = null;
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const titulo = document.querySelector("#inputTitulo");
+        const descricao = document.querySelector("#inputDescricao");
+
+        if (taskEditando) {
+          taskEditando.editar(titulo.value, descricao.value);
+
+          taskEditando = null;
+
+          // Volta o texto do botão
+          const btnSubmit = document.querySelector('button[type="submit"]');
+          btnSubmit.textContent = "✅ Criar Tarefa";
+        } else {
+          // CRIANDO: chama o service
+          service.criarTask(titulo.value, descricao.value);
+        }
+
+        renderizarTasks();
+        form.reset();
+      });
+
+      function renderizarTasks() {
+        // 1. Pegar todas as tasks
+        const tasks = service.listarTasks();
+
+        // 2. Pegar o elemento da lista
+        const listaTasks = document.querySelector("#listaTasks");
+
+        // 3. Limpar a lista
+        listaTasks.innerHTML = "";
+
+        // 4. Para cada task, criar o HTML
+        tasks.forEach((task) => {
+          // Cria o elemento principal (div)
+          const taskElement = document.createElement("div");
+          taskElement.className =
+            "border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200";
+
+          // Define o conteúdo HTML interno
+          taskElement.innerHTML = `
+            <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800">${task.titulo}</h3>
+                <p class="text-gray-600 text-sm mt-1">${task.descricao}</p>
+                
+                <div class="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                <span>📅 ${new Date(task.dataCriacao).toLocaleDateString("pt-BR")}</span>
+                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded">${task.status}</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 ml-4">
+                <select class="text-sm border border-gray-300 rounded px-2 py-1">
+                <option value="PENDENTE">Pendente</option>
+                <option value="EM_PROGRESSO">Em Progresso</option>
+                <option value="CONCLUIDA">Concluída</option>
+                </select>
+                
+                <button class="btn-editar text-sm bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200">
+                ✏️ Editar
+                </button>
+                
+                <button class="btn-excluir text-sm bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200">
+                🗑️ Excluir
+                </button>
+            </div>
+            </div>
+        `;
+
+          // Capturar o select
+          const selectStatus = taskElement.querySelector("select");
+
+          // Define o valor atual
+          selectStatus.value = task.status;
+
+          // Adiciona evento de mudança
+          selectStatus.addEventListener("change", (e) => {
+            // Chama o método mudarStatus da task
+            task.mudarStatus(e.target.value);
+
+            // Re-renderiza para atualizar a tela
+            renderizarTasks();
+          });
+
+          // Captura o botão de excluir
+          const btnExcluir = taskElement.querySelector(".btn-excluir");
+
+          // Adiciona evento de click
+          btnExcluir.addEventListener("click", () => {
+            // Chama o método excluirTask do service passando o id
+            service.excluirTask(task.id);
+
+            // Re-renderiza
+            renderizarTasks();
+          });
+
+          // Captura o botão de editar
+          const btnEditar = taskElement.querySelector(".btn-editar");
+
+          // Adiciona evento de click
+          btnEditar.addEventListener("click", () => {
+            // Preenche o formulário com os dados da task
+            document.querySelector("#inputTitulo").value = task.titulo;
+            document.querySelector("#inputDescricao").value = task.descricao;
+
+            // Guarda qual task está sendo editada (cria uma variável global)
+            taskEditando = task;
+
+            // Muda o texto do botão
+            const btnSubmit = document.querySelector('button[type="submit"]');
+            btnSubmit.textContent = "Editar Tarefa";
+          });
+
+          // Adiciona na lista
+          listaTasks.appendChild(taskElement);
+        });
+      }
+    </script>
+  </body>
+</html>

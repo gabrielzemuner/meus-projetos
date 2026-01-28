@@ -1,0 +1,24 @@
+---
+title: Início
+slug: /
+template: splash
+---
+
+import GuideCard from "../../components/GuideCard.astro";
+import "../../styles/home.css";
+import { GUIDES } from "../../data/guides";
+
+<div class="home">
+  {/* <p class="subtitle">Escolha um guia para abrir em uma nova aba.</p> */}
+  <h2>Guias</h2>
+  <div class="cards">
+    {GUIDES.filter((g) => g.visibility === "public").map((g) => (
+      <GuideCard
+        href={g.startPath}
+        title={g.title}
+        badge={g.badge}
+        description={g.description}
+      />
+    ))}
+  </div>
+</div>

@@ -1,0 +1,329 @@
+---
+title: Seletores
+description: Tag, classe, id, atributo e conflitos (cascata + especificidade).
+slug: essencial-css/01-seletores
+---
+
+Seletores são o “jeito” que o CSS usa pra encontrar elementos no HTML e aplicar regras.
+
+Um CSS sempre tem esse formato:
+
+```css
+seletor {
+  propriedade: valor;
+}
+```
+
+---
+
+## Seletores básicos
+
+### 1) Seletor por tag
+
+Aplica em **todas** as tags daquele tipo.
+
+```css
+p {
+  font-size: 18px;
+}
+```
+
+---
+
+### 2) Seletor por classe (`.classe`)
+
+O mais comum no dia a dia (reutilizável).
+
+```css
+.card {
+  border: 1px solid #ccc;
+  padding: 12px;
+}
+```
+
+---
+
+### 3) Seletor por id (`#id`)
+
+Deve ser **único** na página.
+
+```css
+#menu {
+  background: #111;
+  color: white;
+}
+```
+
+:::note
+Evite usar `#id` como padrão de estilo (porque aumenta a especificidade e vira “briga” no futuro). Prefira classes.
+:::
+
+---
+
+### 4) Seletor por atributo
+
+Seleciona elementos pelo atributo (e/ou por padrões do valor do atributo).
+
+```css
+/* tem o atributo */
+input[disabled] {
+  opacity: 0.5;
+}
+
+/* atributo é exatamente esse valor */
+a[target="_blank"] {
+  text-decoration: underline;
+}
+
+/* atributo contém uma palavra (separada por espaço) */
+a[rel~="nofollow"] {
+  color: orange;
+}
+
+/* atributo começa com */
+a[href^="https://"] {
+  color: green;
+}
+
+/* atributo termina com */
+a[href$=".pdf"] {
+  color: red;
+}
+
+/* atributo contém (em qualquer lugar) */
+img[src*="thumb"] {
+  border: 2px solid;
+}
+```
+
+---
+
+## Combinadores (seletores por relação)
+
+### Descendente (qualquer nível)
+
+Seleciona `a` dentro de `nav` (em qualquer profundidade).
+
+```css
+nav a {
+  color: blue;
+}
+```
+
+### Filho direto (`>`)
+
+Seleciona apenas os `li` que são **filhos diretos** de `ul`.
+
+```css
+ul > li {
+  list-style: square;
+}
+```
+
+### Irmão adjacente (`+`)
+
+Seleciona o elemento que vem **imediatamente depois**.
+
+```css
+h2 + p {
+  margin-top: 0;
+}
+```
+
+### Irmãos gerais (`~`)
+
+Seleciona **todos os irmãos seguintes**.
+
+```css
+h2 ~ p {
+  color: #444;
+}
+```
+
+---
+
+## Pseudo-classes (estados)
+
+Pseudo-classes são “estados” do elemento.
+
+```css
+button:hover {
+  transform: translateY(-1px);
+}
+
+input:focus {
+  outline: 2px solid dodgerblue;
+}
+
+li:first-child {
+  font-weight: bold;
+}
+```
+
+---
+
+## Conflitos: quem vence?
+
+Quando duas regras aplicam no mesmo elemento, o CSS decide por:
+
+1) `!important`  
+2) **especificidade**  
+3) **ordem no arquivo** (se empatar, a última regra ganha)
+
+---
+
+## Especificidade (regra mental)
+
+Em geral:
+
+- `#id` ganha de `.classe`
+- `.classe` ganha de `tag`
+
+Exemplo:
+
+```css
+p {
+  color: red;
+}
+
+.texto {
+  color: blue;
+}
+
+#principal {
+  color: green;
+}
+```
+
+Se o HTML for:
+
+```html
+<p id="principal" class="texto">Olá</p>
+```
+
+Resultado: **verde** (porque `#principal` tem especificidade maior).
+
+---
+
+## Ordem no CSS (quando empata)
+
+Se a especificidade for igual, a regra que vem **por último** vence:
+
+```css
+.titulo {
+  color: red;
+}
+
+.titulo {
+  color: blue;
+}
+```
+
+Resultado: **azul**.
+
+---
+
+## Mini-lab (pra testar rápido)
+
+### HTML
+
+```html
+<nav class="menu" id="menu">
+  <a href="https://exemplo.com" target="_blank">Link https</a>
+  <a href="/arquivo.pdf">PDF</a>
+  <a href="/contato">Contato</a>
+</nav>
+```
+
+### CSS
+
+```css
+nav a {
+  text-decoration: none;
+}
+
+#menu a {
+  font-weight: bold;
+}
+
+a[href$=".pdf"] {
+  color: red;
+}
+```
+
+---
+
+## Exercícios
+
+### 1) Tag vs classe
+
+Objetivo:
+
+- todos os `p` ficam `color: red`
+- apenas `p` com classe `.destaque` ficam `color: blue`
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+p {
+  color: red;
+}
+
+p.destaque {
+  color: blue;
+}
+```
+
+</details>
+
+---
+
+### 2) Atributos
+
+Objetivo:
+
+- links `https://...` ficam sublinhados
+- links que terminam em `.pdf` ficam vermelhos
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+a[href^="https://"] {
+  text-decoration: underline;
+}
+
+a[href$=".pdf"] {
+  color: red;
+}
+```
+
+</details>
+
+---
+
+### 3) Combinadores
+
+Dado:
+
+```html
+<ul class="lista">
+  <li>Item 1</li>
+  <li>Item 2</li>
+</ul>
+```
+
+Objetivo: estilizar somente `li` que são filhos diretos da `.lista`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.lista > li {
+  padding: 8px;
+  border: 1px solid;
+}
+```
+
+</details>

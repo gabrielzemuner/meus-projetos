@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        height: 100vh;
+        /* margin: 0; */
+      }
+
+      div {
+        /* height: 100%; */
+        background-color: black;
+        color: white;
+        border: 5px solid greenyellow;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: end; */
+        align-items: start;
+        gap: 10px;
+      }
+
+      span {
+        background-color: dodgerblue;
+        border: 3px solid red;
+        padding: 10px 20px;
+        /* height: 50px; */
+        /* width: 100%; */
+        animation: slide-in 500ms ease both;
+      }
+
+      /* span:nth-child(3) {
+        flex: 1;
+      } */
+
+      @keyframes slide-in {
+        from {
+          transform: translateX(-30px);
+          opacity: 0;
+        }
+
+        to {
+          transform: initial;
+          opacity: initial;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <span>Item 1</span>
+      <span>Item 2</span>
+      <span>Item 3</span>
+    </div>
+  </body>
+</html>

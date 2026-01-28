@@ -1,0 +1,57 @@
+---
+title: Rest Operator (...)
+description: Capture “o resto” de um objeto ou array (muito usado com destructuring).
+slug: js-antes-do-react/04-rest-operator
+---
+
+O **Rest Operator (`...`)** geralmente aparece junto com destructuring para pegar “o resto” que sobrou.
+
+---
+
+## Rest em objetos
+
+```js
+const user = {
+  name: "Diego",
+  age: 27,
+  address: { street: "Rua teste", number: 176 },
+};
+
+const { name, ...rest } = user;
+
+console.log(name); // => "Diego"
+
+console.log(rest); // => { age: 27, address: { street: "Rua teste", number: 176 } }
+```
+
+---
+
+## Rest em arrays
+
+```js
+const array = [1,2,3,4,5,6,7,8,9,10];
+
+const [first, second, ...rest] = array;
+
+console.log(first, second); // => 1 2
+
+console.log(rest); // => [3,4,5,6,7,8,9,10]
+```
+
+---
+
+## “Pulando” itens no destructuring do array
+
+```js
+const array = [1,2,3,4,5];
+
+const [first, , third, ...rest] = array;
+
+console.log(first, third); // => 1 3
+
+console.log(rest); // => [4,5]
+```
+
+:::note
+O `...rest` sempre precisa estar no final do destructuring.
+:::

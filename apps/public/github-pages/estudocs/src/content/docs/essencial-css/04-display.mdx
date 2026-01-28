@@ -1,0 +1,395 @@
+---
+title: Display
+description: Inline, block, inline-block e flexbox (eixo principal e secundário).
+slug: essencial-css/04-display
+---
+
+A propriedade `display` define **como um elemento se comporta** no layout.
+
+Os mais comuns (no básico) são:
+
+- `inline`
+- `block`
+- `inline-block`
+- `flex`
+
+---
+
+## 1) `display: inline`
+
+Características:
+
+- elementos ficam **lado a lado**
+- ocupam apenas o espaço do conteúdo
+- `width` e `height` normalmente são ignorados
+
+### Exemplo
+
+```css
+span {
+  display: inline;
+  width: 200px;  /* não vai funcionar como você espera */
+  height: 200px; /* não vai funcionar como você espera */
+  background: #ddd;
+}
+```
+
+:::note
+`padding` e `margin` em inline funcionam, mas de forma diferente do block.  
+No começo, pense: inline = “texto”, block = “bloco”.
+:::
+
+---
+
+## 2) `display: block`
+
+Características:
+
+- ocupa a **linha toda** (quebra linha)
+- `width` e `height` são respeitados
+- por padrão, muitos elementos já são block (`div`, `p`, `h1`, `ul`, etc)
+
+### Exemplo
+
+```css
+div {
+  display: block;
+  width: 300px;
+  background: #eee;
+}
+```
+
+---
+
+## 3) `display: inline-block`
+
+Características:
+
+- fica lado a lado **como inline**
+- aceita `width` e `height` **como block**
+
+### Exemplo
+
+```css
+.badge {
+  display: inline-block;
+  width: 140px;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid;
+}
+```
+
+---
+
+## Mini-lab 1 (inline vs block vs inline-block)
+
+### HTML
+
+```html
+<div class="area">
+  <span class="item">Um</span>
+  <span class="item">Dois</span>
+  <span class="item">Três</span>
+</div>
+```
+
+### CSS base
+
+```css
+.area {
+  border: 2px solid;
+  padding: 10px;
+}
+
+.item {
+  border: 1px solid;
+  padding: 8px 12px;
+  margin: 8px;
+  background: #eee;
+}
+```
+
+Agora teste trocando apenas o `display`:
+
+- `.item { display: inline; }`
+- `.item { display: block; }`
+- `.item { display: inline-block; width: 140px; }`
+
+Repare:
+
+- quando quebra linha
+- se respeita width/height
+- se fica lado a lado
+
+---
+
+## 4) `display: flex` (Flexbox)
+
+Flexbox é um modelo de layout pra organizar **itens filhos** dentro de um **container pai**.
+
+Quando você coloca `display: flex` no pai:
+
+- os filhos viram **flex items**
+- o layout começa a obedecer o **eixo principal** e o **eixo secundário**
+
+---
+
+## Eixo principal e eixo secundário
+
+Quem define o **eixo principal** é `flex-direction`:
+
+- `row` (padrão) → eixo principal horizontal
+- `column` → eixo principal vertical
+
+---
+
+## Propriedades mais usadas (no pai)
+
+### `flex-direction`
+
+```css
+.container {
+  display: flex;
+  flex-direction: row; /* ou column */
+}
+```
+
+### `justify-content` (eixo principal)
+
+```css
+.container {
+  display: flex;
+  justify-content: center;
+}
+```
+
+Alguns valores comuns:
+
+- `flex-start`
+- `center`
+- `flex-end`
+- `space-between`
+- `space-around`
+- `space-evenly`
+
+### `align-items` (eixo secundário)
+
+```css
+.container {
+  display: flex;
+  align-items: center;
+}
+```
+
+Valores comuns:
+
+- `stretch` (padrão)
+- `flex-start`
+- `center`
+- `flex-end`
+
+### `gap`
+
+```css
+.container {
+  display: flex;
+  gap: 10px;
+}
+```
+
+---
+
+## Erro clássico: “não aconteceu nada”
+
+Se você quer alinhar verticalmente (por exemplo, `align-items: center`), muitas vezes precisa de **altura definida**.
+
+Exemplo:
+
+```css
+.container {
+  /* sem altura, o efeito desejado pode não aparecer */
+  /* height: 100vh; */
+
+  display: flex;
+  align-items: center;
+}
+```
+
+:::tip
+Pra centralizar no centro da tela (100% certeiro):
+
+```css
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+:::
+
+---
+
+## Mini-lab 2 (Flexbox na prática)
+
+### HTML
+
+```html
+<div class="container">
+  <div class="box">1</div>
+  <div class="box">2</div>
+  <div class="box">3</div>
+</div>
+```
+
+### CSS base
+
+```css
+.container {
+  border: 2px solid;
+  padding: 10px;
+}
+
+.box {
+  border: 1px solid;
+  padding: 16px 22px;
+  background: #eee;
+}
+```
+
+Agora faça as variações:
+
+1) Centralizar tudo:
+
+```css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 200px;
+}
+```
+
+2) Espaçar nas pontas:
+
+```css
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+```
+
+3) Coluna (um embaixo do outro):
+
+```css
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+```
+
+---
+
+## Exercícios
+
+### 1) Inline-block com tamanho fixo
+
+Crie 3 `.badge` lado a lado, cada uma com:
+
+- largura 120px
+- altura 40px
+- padding 8px
+- borda 1px
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.badge {
+  display: inline-block;
+  width: 120px;
+  height: 40px;
+  padding: 8px;
+  border: 1px solid;
+  box-sizing: border-box;
+}
+```
+
+</details>
+
+---
+
+### 2) Centralizar no centro da tela (flex)
+
+Centralize um quadrado no meio da tela.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quadrado {
+  width: 120px;
+  height: 120px;
+  border: 2px solid;
+}
+```
+
+</details>
+
+---
+
+### 3) Menu com `space-between`
+
+Faça um menu horizontal com 4 links, ocupando a largura e com espaçamento entre eles.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```css
+.menu {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+```
+
+</details>
+
+---
+
+### 4) Trocar eixo e alinhar certo
+
+Você tem:
+
+```css
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+Pergunta: onde cada um atua?
+
+<details>
+  <summary><strong>Ver resposta</strong></summary>
+
+Com `flex-direction: column`, o eixo principal é **vertical**.
+
+- `justify-content` alinha no **vertical**
+- `align-items` alinha no **horizontal**
+</details>

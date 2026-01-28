@@ -1,0 +1,206 @@
+---
+title: 01 — Tipos
+description: Tipos básicos, arrays, funções, objetos, união, type alias, any e inferência.
+slug: typescript/01-tipos
+---
+
+Nesta parte você aprende o básico do TypeScript: declarar tipos, entender inferência e ver onde o TS ajuda a evitar bugs.
+
+---
+
+## 01-basico.ts
+
+```ts
+let nome: string = 'João';
+let numeros: number[] = [1, 2, 3, 4];
+
+console.log(nome);
+console.log(numeros);
+```
+
+---
+
+## 02-funcao.ts
+
+### Exemplo 1: `void`
+
+```ts
+function bomDia(): void {
+  console.log('Bom dia!');
+}
+
+bomDia();
+```
+
+`void` = a função **não retorna** um valor útil.
+
+### Exemplo 2: retorna número
+
+```ts
+function somar(a: number, b: number): number {
+  return a + b;
+}
+
+const resultado = somar(10, 20);
+console.log(resultado);
+```
+
+### Inferência no retorno (sem anotar)
+
+```ts
+function somar2(a: number, b: number) {
+  return a + b;
+}
+
+const resultado2 = somar2(1, 2);
+console.log(resultado2);
+```
+
+---
+
+## 03-objeto.ts
+
+```ts
+const pessoa: { nome: string; idade: number } = {
+  nome: 'Maria',
+  idade: 30,
+};
+
+pessoa.idade = 31;
+
+console.log(pessoa.nome);
+console.log(pessoa.idade);
+```
+
+:::note
+Esse formato `{ nome: string; idade: number }` é útil em exemplos, mas em projetos você vai preferir `type` ou `interface`.
+:::
+
+---
+
+## 04-uniao.ts
+
+```ts
+let id: string | number = 5;
+console.log(id);
+
+id = 'fahdhiasdoi1351246afsfs';
+console.log(id);
+```
+
+`string | number` é **union type**: pode ser um ou outro.
+
+---
+
+## 05-tipo.ts (type alias)
+
+```ts
+type ID = string | number;
+
+let usuarioId: ID = 2112;
+console.log(usuarioId);
+
+usuarioId = 'abcb123858057-fgsakdcb123';
+console.log(usuarioId);
+```
+
+---
+
+## 06-generico.ts (na prática: `any`)
+
+Esse exemplo está falando de `any` (não de generics de verdade).
+
+```ts
+let x: any = 5;
+console.log(x, typeof x);
+
+x = 'João';
+console.log(x, typeof x);
+
+x = [1, 2, 3, 4];
+console.log(x, typeof x);
+```
+
+:::warning
+Evite `any` em React. Se precisar “desconhecido”, prefira `unknown` + validação.
+:::
+
+### Extra: `unknown` (melhor que `any`)
+
+```ts
+let valor: unknown = "abc";
+
+// valor.toUpperCase(); // erro: não dá pra usar direto
+
+if (typeof valor === "string") {
+  console.log(valor.toUpperCase()); // ok
+}
+```
+
+---
+
+## 07-inferencia.ts
+
+```ts
+let valor = 30;
+console.log(valor);
+
+// valor = 'João' // erro, porque TS inferiu number
+console.log(valor);
+```
+
+---
+
+## Como isso aparece em React (o que importa)
+
+1. **Union types** para IDs e estados (`"idle" | "loading" | "error"`).
+2. **Inferência** em callbacks e hooks (mas cuidado com `useState` sem valor inicial).
+3. **Evitar `any`** em props e dados de API.
+
+Exemplo de estado bem comum em UI (discriminated union):
+
+```ts
+type State =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: string[] }
+  | { status: "error"; message: string };
+```
+
+---
+
+## Exercícios
+
+### 1) Union + validação
+
+Crie uma função que receba `id: string | number` e retorne:
+
+- se for number: `"ID-num: 123"`
+- se for string: `"ID-str: abc"`
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+function formatarId(id: string | number): string {
+  if (typeof id === "number") return `ID-num: ${id}`;
+  return `ID-str: ${id}`;
+}
+```
+
+</details>
+
+### 2) Evite `any`
+
+Receba um `unknown` e só use se for `string`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+function imprimirSeString(v: unknown) {
+  if (typeof v === "string") console.log(v.toUpperCase());
+}
+```
+
+</details>

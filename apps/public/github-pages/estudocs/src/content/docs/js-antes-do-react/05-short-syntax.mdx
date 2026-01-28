@@ -1,0 +1,52 @@
+---
+title: Short Syntax
+description: Quando a chave e a variável têm o mesmo nome, dá pra encurtar.
+slug: js-antes-do-react/05-short-syntax
+---
+
+O **Short Syntax** (também chamado de _Object Property Shorthand_) é quando você cria um objeto e **a chave tem o mesmo nome da variável**.
+
+---
+
+## Exemplo base
+
+```js
+const name = "Diego";
+const age = 27;
+```
+
+---
+
+## Forma “normal” (sem short syntax)
+
+```js
+const name = "Diego";
+const age = 27;
+
+const user = {
+  name: name,
+  age: age,
+};
+
+console.log(user); // => { name: "Diego", age: 27 }
+```
+
+---
+
+## Forma curta (short syntax)
+
+```js
+const name = "Diego";
+const age = 27;
+
+const user = {
+  name,
+  age,
+};
+
+console.log(user); // => { name: "Diego", age: 27 }
+```
+
+:::tip
+Isso é extremamente comum em código moderno — você vai ver direto em React, Node, etc.
+:::

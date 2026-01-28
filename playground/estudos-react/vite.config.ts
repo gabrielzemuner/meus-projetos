@@ -1,0 +1,15 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      "/fe-api": {
+        target: "https://api.frontendexpert.io",
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/fe-api/, ""),
+      },
+    },
+  },
+});

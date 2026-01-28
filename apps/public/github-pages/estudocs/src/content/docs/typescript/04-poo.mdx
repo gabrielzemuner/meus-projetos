@@ -1,0 +1,133 @@
+---
+title: 04 — POO
+description: Abstract, herança, protected/private, implements e override.
+slug: typescript/04-poo
+---
+
+O professor trouxe um exemplo único (Carro/Civic/Ferrari) pra mostrar conceitos de POO.
+Em React, isso é menos usado no dia a dia, mas é ótimo pra entender linguagem e arquitetura.
+
+---
+
+## 01-carro.ts
+
+```ts
+export default abstract class Carro {
+  constructor(
+    private readonly velocidadeMaxima: number = 220,
+    private readonly aceleracao = 5,
+    private readonly frenagem = 5,
+    protected velocidadeAtual: number = 0,
+  ) {}
+
+  get velocidade(): number {
+    return this.velocidadeAtual;
+  }
+
+  acelerar(): number {
+    const novaVelocidade = this.velocidadeAtual + this.aceleracao;
+    this.velocidadeAtual = novaVelocidade <= this.velocidadeMaxima ? novaVelocidade : this.velocidadeMaxima;
+    return this.velocidadeAtual;
+  }
+
+  frear(): number {
+    const novaVelocidade = this.velocidadeAtual - this.frenagem;
+    this.velocidadeAtual = novaVelocidade >= 0 ? novaVelocidade : 0;
+    return this.velocidadeAtual;
+  }
+}
+
+class Civic extends Carro {
+  constructor() {
+    super(230, 10, 5);
+  }
+}
+
+const meuCarro = new Civic();
+meuCarro.acelerar();
+meuCarro.acelerar();
+meuCarro.acelerar();
+console.log('Civic:', meuCarro.velocidade);
+
+interface Esportivo {
+  ligarTurbo(): void;
+  desligarTurbo(): void;
+}
+
+class Ferrari extends Carro implements Esportivo {
+  private turbo = false;
+
+  constructor() {
+    super(350, 20, 15);
+  }
+
+  ligarTurbo(): void {
+    this.turbo = true;
+  }
+
+  desligarTurbo(): void {
+    this.turbo = false;
+  }
+
+  acelerar(): number {
+    if (this.turbo) {
+      super.acelerar();
+      return super.acelerar();
+    } else {
+      return super.acelerar();
+    }
+  }
+}
+
+const meuCarroEsportivo = new Ferrari();
+meuCarroEsportivo.ligarTurbo();
+meuCarroEsportivo.acelerar();
+meuCarroEsportivo.acelerar();
+meuCarroEsportivo.acelerar();
+console.log('Ferrari:', meuCarroEsportivo.velocidade);
+meuCarroEsportivo.frear();
+meuCarroEsportivo.frear();
+console.log('Ferrari:', meuCarroEsportivo.velocidade);
+```
+
+---
+
+## O que aprender aqui
+
+1. `abstract`: define uma base que não deve ser instanciada diretamente.
+2. `private`: só acessa dentro da classe.
+3. `protected`: acessa na classe e nas subclasses.
+4. `implements`: obriga a classe a cumprir um contrato (interface).
+5. Override de método + uso de `super`.
+
+---
+
+## Como isso aparece em React
+
+- React em si não exige POO.
+- Você vê isso mais em bibliotecas/SDKs.
+- Entender `private/protected` ajuda a ler código de terceiros.
+
+---
+
+## Exercício
+
+Crie uma interface `Logavel` com método `log(): void` e uma classe que implemente e imprima um valor.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+interface Logavel {
+  log(): void;
+}
+
+class Estado implements Logavel {
+  constructor(private valor: string) {}
+  log() {
+    console.log(this.valor);
+  }
+}
+```
+
+</details>

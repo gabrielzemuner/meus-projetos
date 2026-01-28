@@ -1,0 +1,145 @@
+---
+title: 05 — Módulos
+description: Import/export, organização por pastas, default export vs named export.
+slug: typescript/05-modulos
+---
+
+Módulos é o que mais conecta com React: projeto real = arquivos + imports.
+
+---
+
+## Estrutura (do professor)
+
+1. `main.ts`
+2. `model/Carrinho.ts`
+3. `model/ItemCarrinho.ts`
+4. `functions/calcularTotal.ts`
+5. `functions/removerItensZerados.ts`
+
+---
+
+## main.ts
+
+```ts
+import { calcularDesconto, calcularTotal } from './functions/calcularTotal';
+import removerItensZerados from './functions/removerItensZerados';
+import Carrinho from './model/Carrinho';
+
+const carrinhoOriginal: Carrinho = {
+  itens: [
+    { nome: 'Caneta', preco: 1.5, quantidade: 2 },
+    { nome: 'Caderno', preco: 10, quantidade: 1 },
+    { nome: 'Borracha', preco: 0.5, quantidade: 3 },
+    { nome: 'Estojo', preco: 5, quantidade: 0 },
+  ],
+  cupom: 0.1,
+  total: 0,
+  totalComDesconto: 0,
+};
+
+const carrinhoSemItensZerados = removerItensZerados(carrinhoOriginal);
+const carrinhoComTotal = calcularTotal(carrinhoSemItensZerados);
+const carrinhoComDesconto = calcularDesconto(carrinhoComTotal);
+
+console.log(carrinhoOriginal);
+console.log(carrinhoComDesconto);
+```
+
+---
+
+## model/ItemCarrinho.ts
+
+```ts
+export default interface ItemCarrinho {
+  nome: string;
+  preco: number;
+  quantidade: number;
+}
+```
+
+---
+
+## model/Carrinho.ts
+
+```ts
+import ItemCarrinho from "./ItemCarrinho";
+
+export default interface Carrinho {
+  readonly itens: ItemCarrinho[];
+  readonly cupom?: number;
+  total: number;
+  totalComDesconto: number;
+}
+```
+
+---
+
+## functions/calcularTotal.ts
+
+```ts
+import Carrinho from '../model/Carrinho';
+import ItemCarrinho from '../model/ItemCarrinho';
+
+export function calcularTotal(carrinho: Carrinho): Carrinho {
+  const total = carrinho.itens.reduce((total: number, item: ItemCarrinho) => {
+    const totalItem = item.preco * item.quantidade;
+    return total + totalItem;
+  }, 0);
+  return { ...carrinho, total };
+}
+
+export function calcularDesconto(carrinho: Carrinho): Carrinho {
+  return {
+    ...carrinho,
+    totalComDesconto: carrinho.total - carrinho.total * (carrinho.cupom ?? 0),
+  };
+}
+```
+
+---
+
+## functions/removerItensZerados.ts
+
+```ts
+import Carrinho from '../model/Carrinho';
+
+export default function removerItensZerados(carrinho: Carrinho): Carrinho {
+  const itens = carrinho.itens.filter((item) => item.quantidade > 0);
+  return { ...carrinho, itens };
+}
+```
+
+---
+
+## Named export vs Default export
+
+1. **Named export**: `export function x()` → importa com o mesmo nome: `import { x } from ...`
+2. **Default export**: `export default ...` → importa com qualquer nome: `import qualquerNome from ...`
+
+:::tip
+Em projetos React, um padrão comum é:
+- named export para utilitários/hooks
+- default export para componentes (opcional)
+O mais importante é ser consistente.
+:::
+
+---
+
+## Exercícios
+
+### 1) Criar função nova
+
+Crie uma função `calcularQuantidadeTotal(carrinho)` que some as quantidades e retorne `number`.
+
+<details>
+  <summary><strong>Ver resposta sugerida</strong></summary>
+
+```ts
+import Carrinho from "../model/Carrinho";
+
+export function calcularQuantidadeTotal(carrinho: Carrinho): number {
+  return carrinho.itens.reduce((acc, item) => acc + item.quantidade, 0);
+}
+```
+
+</details>
