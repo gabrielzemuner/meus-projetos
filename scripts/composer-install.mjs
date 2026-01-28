@@ -3,10 +3,21 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 
 const ROOT = process.cwd();
-const SKIP = new Set(["node_modules", "vendor", ".git", ".github", ".pnpm-store"]);
+const SKIP = new Set([
+  "node_modules",
+  "vendor",
+  ".git",
+  ".github",
+  ".pnpm-store",
+]);
 
 async function exists(p) {
-  try { await fs.access(p); return true; } catch { return false; }
+  try {
+    await fs.access(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function run(cmd, args, cwd) {
@@ -16,10 +27,35 @@ function run(cmd, args, cwd) {
   });
 }
 
+// ✅ Detecta Laravel de forma simples: tem "artisan"
+async function isLaravel(dir) {
+  return await exists(path.join(dir, "artisan"));
+}
+
+// ✅ Garante pastas essenciais do Laravel (cache + storage) e permissões no mac/linux
+async function ensureLaravelDirs(dir) {
+  // Pastas que evitam "Invalid cache path"
+  await fs.mkdir(path.join(dir, "bootstrap", "cache"), { recursive: true });
+  await fs.mkdir(path.join(dir, "storage", "framework", "views"), {
+    recursive: true,
+  });
+  await fs.mkdir(path.join(dir, "storage", "framework", "cache"), {
+    recursive: true,
+  });
+  await fs.mkdir(path.join(dir, "storage", "framework", "sessions"), {
+    recursive: true,
+  });
+  await fs.mkdir(path.join(dir, "storage", "logs"), { recursive: true });
+
+  // No mac/linux, garantir que é gravável
+  if (process.platform !== "win32") {
+    await run("chmod", ["-R", "775", "bootstrap/cache", "storage"], dir);
+  }
+}
+
 async function walk(dir, out = []) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
 
-  // Se tem composer.json aqui, adiciona e não precisa descer em vendor depois
   if (await exists(path.join(dir, "composer.json"))) out.push(dir);
 
   for (const e of entries) {
@@ -37,11 +73,30 @@ if (projects.length === 0) {
   process.exit(0);
 }
 
-console.log(`Encontrados ${projects.length} projetos PHP/Laravel:\n- ${projects.join("\n- ")}\n`);
+console.log(
+  `Encontrados ${projects.length} composer.json:\n- ${projects.join("\n- ")}\n`,
+);
 
 let failed = 0;
 for (const dir of projects) {
-  console.log(`\n=== composer install em: ${dir} ===`);
+  const laravel = await isLaravel(dir);
+
+  console.log(
+    `\n=== composer install em: ${dir}${laravel ? " (Laravel)" : ""} ===`,
+  );
+
+  // ✅ Só mexe em bootstrap/cache se for Laravel
+  if (laravel) {
+    try {
+      await ensureLaravelDirs(dir);
+    } catch (e) {
+      console.warn(
+        `⚠️ Não consegui preparar bootstrap/cache em ${dir}:`,
+        e?.message ?? e,
+      );
+    }
+  }
+
   const code = await run("composer", ["install"], dir);
   if (code !== 0) failed++;
 }

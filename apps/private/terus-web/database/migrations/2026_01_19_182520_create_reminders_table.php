@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
             $table->date('start_date');
             $table->string('recurrence');          // day|week|month|year
-            $table->text('message');
+            $table->text('message')->nullable();
             $table->date('next_run_at')->nullable();
             $table->boolean('is_active')->default(false);
             $table->timestamps();
