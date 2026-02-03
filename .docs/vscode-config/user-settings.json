@@ -1,0 +1,50 @@
+{
+    "files.autoSave": "afterDelay",
+    "workbench.iconTheme": "symbols",
+    "workbench.productIconTheme": "a-file-icon-vscode-product-icon-theme",
+    "notebook.lineNumbers": "on",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "svelte.enable-ts-plugin": true,
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.associations": {
+        "*.mdx": "mdx"
+    },
+    "editor.wordWrap": "on",
+    "editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'liga'",
+    "terminal.integrated.env.windows": {},
+    "console-ninja.featureSet": "Community",
+    "editor.fontFamily": "'JetBrains Mono', 'Monaspace Radon', Consolas, 'Courier New', monospace",
+    "reactSnippets.settings.importReactOnTop": false,
+    "editor.autoClosingBrackets": "always",
+    "editor.autoClosingQuotes": "always",
+    "editor.semanticTokenColorCustomizations": {
+        
+    },
+    "[mdx]": {
+        "editor.defaultFormatter": "unifiedjs.vscode-mdx"
+    },
+    "markdown-preview-enhanced.previewTheme": "vue.css",
+    "workbench.colorTheme": "One Dark Pro Night Flat",
+    "typescript.updateImportsOnFileMove.enabled": "never",
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "terminal.integrated.initialHint": false,
+}
