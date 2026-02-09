@@ -13,13 +13,15 @@ type IUiContext = {
 const UiContext = createContext<IUiContext | null>(null); // '{} as IUIContext' => estamos 'enganando' o typescript, mas isso pode gerar um problema pq se não envolvermos o código que queremos o context com provider (ex: <UiContextProvider>código...</UiContextProvider>, o typescript vai continuar com autocomplete e vai gerar erro na aplicação)
 
 export const useUi = () => {
-  const context = useContext(UiContext);
-  if (context === null) throw new Error('useContext deve estar dentro do Provider')
-  return context;
+  const ctx = useContext(UiContext);
+
+  if (!ctx) throw new Error("useContext deve estar dentro do Provider");
+  return ctx;
 };
 
 export const UiContextProvider = ({ children }: PropsWithChildren) => {
   const [dark, setDark] = useState(false);
+
   return (
     <UiContext.Provider value={{ dark, setDark }}>
       {children}
