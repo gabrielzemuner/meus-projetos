@@ -1,0 +1,1 @@
+arquivo package.json -> configuração de pnpm com laravel + backup pasta scripts
