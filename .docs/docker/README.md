@@ -1,87 +1,109 @@
-- Dica: pra não ficar digitando `./vendor/bin/sail` toda hora, crie um alias no WSL:
+# Configuração inicial do ambiente (fazer apenas uma vez)
 
-```bash
-echo "alias sail='./vendor/bin/sail'" >> ~/.bashrc
-source ~/.bashrc
-```
-
-- Por padrão o WSL armazena tudo no C:. Mas você pode mover o WSL para o D:.
-
-- Mover o WSL para o D:
+## 1. Mover o WSL para o D:
 ```powershell
 # No PowerShell (como administrador)
-
-# 1. Remove a distro atual (sem backup)
 wsl --unregister Ubuntu
-
-# 2. Cria a pasta no D:
 mkdir D:\wsl\Ubuntu
-
-# 3. Reinstala o Ubuntu direto no D:
 wsl --install Ubuntu --location D:\wsl\Ubuntu
-
-# 4. Mudar distro padrão (necessário para abrir o WSL sempre no Ubuntu)
 wsl --set-default Ubuntu
-
-# Comando pra verificar Ubuntu instalado
-wsl --list
 ```
 
-```bash wsl
-# Comando para copiar pasta do windows para o linux (sem node_modules, vendor e git)
-rsync -av --exclude 'node_modules' --exclude 'vendor' --exclude '.git' --exclude '.next' /mnt/d/programacao/meus-projetos/ ~/meus-projetos/
-```
+## 2. Configurar o WSL
+```bash
+# Instalar PHP (necessário para rodar sail:install)
+sudo apt update
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:ondrej/php
+sudo apt update
+sudo apt install php8.4 php8.4-cli php8.4-xml php8.4-mbstring php8.4-curl php8.4-zip php8.4-mysql unzip curl git -y
 
-# Comandos úteis WSL
-
-- remover pasta 
-
-```bash wsl
-rm -rf ~/meus-projetos
-```
-
-- acessar raiz
-
-```bash wsl
-cd ~
-```
-
-# Instalar Node.js no WSL
-
-```bash wsl
-# instalação node
+# Instalar Node.js
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# verificar se node foi instalado
-node -v
-
-# instalação pnpm
+# Instalar pnpm
 sudo corepack enable
 corepack prepare pnpm@10.28.2 --activate
 
+# Configurar alias do Sail
+echo "alias sail='./vendor/bin/sail'" >> ~/.bashrc
+source ~/.bashrc
+
+# Configurar Git
+git config --global user.name "Seu Nome"
+git config --global user.email "seu@email.com"
+```
+
+## 3. Clonar o projeto do GitHub
+```bash
+cd ~
+git clone https://github.com/seu-user/meus-projetos.git
+```
+
+## 4. Instalar dependências Node (projetos React, Next etc.)
+```bash
+cd ~/meus-projetos
 pnpm install
 ```
 
-# Copiar um projeto do github para WSL
-
-```bash wsl
-cd ~
-git clone https://github.com/seu-user/meus-projetos.git
-
-cd ~/meus-projetos
-pnpm install                    # instala node_modules de todos os projetos Node
-
+## 5. Configurar projeto Laravel com Docker
+```bash
 cd ~/meus-projetos/apps-laravel/docker/laravel-inertia-react
+
+# Criar pastas necessárias
+mkdir -p bootstrap/cache
+chmod 775 bootstrap/cache
+mkdir -p storage/framework/{cache,sessions,views}
+
+# Instalar dependências PHP (única vez, para criar o vendor)
+composer install
+
+# Configurar Sail e ambiente
+php artisan sail:install        # escolher PostgreSQL
+cp .env.example .env
+php artisan key:generate
+
+# Subir o Docker
+sail build
 sail up -d
-sail composer install           # instala o vendor
-sail npm install                # instala node_modules
+
+# Configurar banco e frontend
+sail artisan migrate
+sail npm install
 sail npm run dev
 ```
 
-# Abrir arquivos do WSL no editor de código (IDE)
+# Comandos do dia a dia
 
-```bash wsl
+## Iniciar o ambiente
+```bash
+cd ~/meus-projetos/apps-laravel/docker/laravel-inertia-react
+sail up -d
+sail npm run dev
+```
+
+## Parar o ambiente
+```bash
+sail down
+```
+
+## Abrir no VSCode
+```bash
 cd ~/meus-projetos
 code .
 ```
+
+## Comandos úteis
+```bash
+sail artisan migrate            # rodar migrations
+sail artisan make:controller X  # criar controller
+sail composer require pacote    # instalar pacote PHP
+sail npm install pacote         # instalar pacote Node
+sail shell                      # entrar no container
+sail down -v                    # parar e apagar volumes (reseta banco)
+```
+
+## Mudar terminal padrão no VS CODE (WSL)
+
+`Ctrl+Shift+P` -> "Terminal: Select Default Profile"
