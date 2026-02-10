@@ -26,13 +26,13 @@ sudo apt install -y nodejs
 sudo corepack enable
 corepack prepare pnpm@10.28.2 --activate
 
-# Configurar alias do Sail
-echo "alias sail='./vendor/bin/sail'" >> ~/.bashrc
-source ~/.bashrc
-
 # Configurar Git
 git config --global user.name "Seu Nome"
 git config --global user.email "seu@email.com"
+
+# Configurar acesso github para fazer push
+sudo apt install gh -y
+gh auth login
 ```
 
 ## 3. Clonar o projeto do GitHub
@@ -63,6 +63,11 @@ composer install
 php artisan sail:install        # escolher PostgreSQL
 cp .env.example .env
 php artisan key:generate
+
+
+# Configurar alias do Sail
+echo "alias sail='./vendor/bin/sail'" >> ~/.bashrc
+source ~/.bashrc
 
 # Subir o Docker
 sail build
